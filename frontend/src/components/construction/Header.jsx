@@ -110,9 +110,9 @@ export default function Header() {
                   <Phone className="w-4 h-4" />
                   Call Now
                 </Button>
-                <Button className="w-full bg-orange-500 hover:bg-orange-600">
+                {/* <Button className="w-full bg-orange-500 hover:bg-orange-600">
                   Get a Quote
-                </Button>
+                </Button> */}
               </div>
             </nav>
           </div>
