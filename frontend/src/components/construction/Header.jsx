@@ -71,12 +71,12 @@ export default function Header() {
               <Phone className="w-4 h-4" />
               Call Now
             </Button>
-            <Button 
+            {/* <Button 
               size="sm"
               className="bg-orange-500 hover:bg-orange-600 text-white"
             >
               Get a Quote
-            </Button>
+            </Button> */}
           </div>
 
           {/* Mobile Menu Button */}
