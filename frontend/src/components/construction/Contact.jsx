@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MapPin, Phone, Mail, Clock, ArrowRight } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from '@/lib/utils';
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { PHONE_TEL_HREF, PHONE_DISPLAY } from '@/lib/contact';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -20,7 +22,8 @@ export default function Contact() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const apiBase = import.meta.env.VITE_API_URL ?? '';
+      const response = await fetch(`${apiBase}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -33,8 +36,8 @@ export default function Contact() {
         toast.error('Something went wrong. Please try again.');
       }
     } catch (error) {
-      toast.success('Thank you! We will contact you soon.');
-      setFormData({ name: '', phone: '', email: '', message: '' });
+      console.error(error);
+      toast.error('Could not send your message. Please call us or try again later.');
     }
     
     setIsSubmitting(false);
@@ -49,7 +52,7 @@ export default function Contact() {
     {
       icon: Phone,
       title: 'Call Us',
-      details: ['+91 98765 43210', '+91 87654 32109']
+      details: [PHONE_DISPLAY]
     },
     {
       icon: Mail,
@@ -113,14 +116,26 @@ export default function Contact() {
 
             {/* Quick Action Buttons */}
             <div className="pt-6 space-y-3">
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-6 text-lg">
-                <Phone className="mr-2 w-5 h-5" />
+              <a
+                href={PHONE_TEL_HREF}
+                className={cn(
+                  buttonVariants(),
+                  'w-full bg-orange-500 hover:bg-orange-600 text-white h-11 text-sm font-semibold sm:h-12 sm:text-base'
+                )}
+              >
+                <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Call Now
-              </Button>
-              <Button variant="outline" className="w-full border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white py-6 text-lg">
-                <Mail className="mr-2 w-5 h-5" />
+              </a>
+              <a
+                href="mailto:info@utkarshinfratech.com"
+                className={cn(
+                  buttonVariants({ variant: 'outline' }),
+                  'w-full border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white h-11 text-sm font-semibold sm:h-12 sm:text-base'
+                )}
+              >
+                <Mail className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Send Email
-              </Button>
+              </a>
             </div>
           </motion.div>
 

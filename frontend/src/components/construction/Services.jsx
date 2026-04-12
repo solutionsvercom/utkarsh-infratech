@@ -2,6 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Home, Building, Landmark, Hammer, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import imgResidential from '@/assets/images/Residential_construction.jpeg';
+import imgCommercial from '@/assets/images/Commercial_construction.jpeg';
+import imgInfrastructure from '@/assets/images/infrastructure_construction.jpeg';
+import imgRenovation from '@/assets/images/Reinovation_construction.jpeg';
 
 export default function Services() {
   const services = [
@@ -9,25 +13,25 @@ export default function Services() {
       icon: Home,
       title: 'Residential Construction',
       description: 'Custom homes, apartments, and villas built with precision and care to create your dream living space.',
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80'
+      image: imgResidential
     },
     {
       icon: Building,
       title: 'Commercial Projects',
       description: 'Office buildings, retail spaces, and commercial complexes designed for functionality and aesthetics.',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80'
+      image: imgCommercial
     },
     {
       icon: Landmark,
       title: 'Infrastructure Development',
       description: 'Roads, bridges, and public infrastructure projects that serve communities for generations.',
-      image: 'https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=600&q=80'
+      image: imgInfrastructure
     },
     {
       icon: Hammer,
       title: 'Renovation & Contracting',
       description: 'Transform existing spaces with our expert renovation and general contracting services.',
-      image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=600&q=80'
+      image: imgRenovation
     }
   ];
 
