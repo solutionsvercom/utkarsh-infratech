@@ -1,5 +1,6 @@
 import React from 'react';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowUp } from 'lucide-react';
+import { PHONE_TEL_HREF, PHONE_DISPLAY } from '@/lib/contact';
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -50,7 +51,7 @@ export default function Footer() {
               {[Facebook, Instagram, Linkedin, Twitter].map((Icon, index) => (
                 <a
                   key={index}
-                  href__="#"
+                  href="#"
                   className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:bg-orange-500 hover:text-white transition-all duration-300"
                 >
                   <Icon className="w-5 h-5" />
@@ -69,7 +70,7 @@ export default function Footer() {
               {quickLinks.map((link) => (
                 <li key={link.label}>
                   <a
-                    href__={link.href}
+                    href={link.href}
                     className="text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-2 group"
                   >
                     <span className="w-0 group-hover:w-2 h-0.5 bg-orange-500 transition-all duration-300" />
@@ -90,7 +91,7 @@ export default function Footer() {
               {services.map((service) => (
                 <li key={service}>
                   <a
-                    href__="#services"
+                    href="#services"
                     className="text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-2 group"
                   >
                     <span className="w-0 group-hover:w-2 h-0.5 bg-orange-500 transition-all duration-300" />
@@ -114,15 +115,13 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-orange-500 flex-shrink-0" />
-                <div className="text-gray-400">
-                  <a href__="tel:+919876543210" className="hover:text-orange-500 transition-colors">+91 98765 43210</a>
-                  <br />
-                  <a href__="tel:+918765432109" className="hover:text-orange-500 transition-colors">+91 87654 32109</a>
-                </div>
+                <a href={PHONE_TEL_HREF} className="text-gray-400 hover:text-orange-500 transition-colors">
+                  {PHONE_DISPLAY}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-orange-500 flex-shrink-0" />
-                <a href__="mailto:info@utkarshinfratech.com" className="text-gray-400 hover:text-orange-500 transition-colors">
+                <a href="mailto:info@utkarshinfratech.com" className="text-gray-400 hover:text-orange-500 transition-colors">
                   info@utkarshinfratech.com
                 </a>
               </li>

@@ -1,7 +1,9 @@
 import React from 'react';
-import { Button } from "@/components/ui/button";
-import { Phone, ArrowRight } from 'lucide-react';
+import { buttonVariants } from "@/components/ui/button";
+import { Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { PHONE_TEL_HREF } from '@/lib/contact';
 
 export default function Hero() {
   return (
@@ -53,23 +55,17 @@ export default function Hero() {
             integrity, and an unwavering commitment to excellence.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              size="lg"
-              className="bg-orange-500 hover:bg-orange-600 text-white text-lg px-8 py-6 rounded-lg group"
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              href={PHONE_TEL_HREF}
+              className={cn(
+                buttonVariants({ variant: 'outline' }),
+                'border-2 border-white bg-white/15 text-white shadow-none backdrop-blur-sm hover:bg-white hover:text-gray-900 rounded-lg px-6 py-2.5 h-11 text-sm font-semibold sm:text-base sm:h-12 sm:px-8'
+              )}
             >
-              Get a Quote
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button 
-              size="lg"
-              variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-gray-900 text-lg px-8 py-6 rounded-lg"
-            >
-              <Phone className="mr-2 w-5 h-5" />
+              <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Call Now
-            </Button>
+            </a>
           </div>
 
           {/* Stats */}
@@ -82,7 +78,7 @@ export default function Hero() {
             {[
               { number: '15+', label: 'Years Experience' },
               { number: '200+', label: 'Projects Completed' },
-              { number: '100%', label: 'Client Satisfaction' },
+              { number: '99%', label: 'Client Satisfaction' },
             ].map((stat) => (
               <div key={stat.label}>
                 <p className="text-3xl sm:text-4xl font-bold text-orange-500">{stat.number}</p>

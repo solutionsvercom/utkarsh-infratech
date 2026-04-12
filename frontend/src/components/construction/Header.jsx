@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from '@/lib/utils';
+import { PHONE_TEL_HREF } from '@/lib/contact';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,9 +32,9 @@ export default function Header() {
       isScrolled ? 'bg-white shadow-lg py-2' : 'bg-transparent py-4'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0 shrink-0">
             <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">U</span>
             </div>
@@ -61,27 +63,42 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* CTA Buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              size="sm"
-              className={`gap-2 ${isScrolled ? 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white' : 'border-white text-white hover:bg-white hover:text-gray-900'}`}
+          {/* Mobile: always-visible call (not hidden behind hover / hamburger only) */}
+          <a
+            href={PHONE_TEL_HREF}
+            className={cn(
+              buttonVariants({ variant: 'outline', size: 'sm' }),
+              'lg:hidden flex-shrink-0 gap-1.5 px-2.5 sm:px-3',
+              isScrolled
+                ? 'border-orange-500 bg-orange-500 text-white hover:bg-orange-600 hover:text-white'
+                : 'border-white bg-white/15 text-white backdrop-blur-sm hover:bg-white hover:text-gray-900'
+            )}
+          >
+            <Phone className="w-4 h-4" />
+            <span className="hidden sm:inline text-xs font-semibold">Call</span>
+          </a>
+
+          {/* Desktop CTA */}
+          <div className="hidden lg:flex items-center gap-3">
+            <a
+              href={PHONE_TEL_HREF}
+              className={cn(
+                buttonVariants({ variant: 'outline', size: 'sm' }),
+                'gap-2',
+                isScrolled
+                  ? 'border-gray-900 bg-white text-gray-900 hover:bg-gray-900 hover:text-white'
+                  : 'border-white bg-white/15 text-white backdrop-blur-sm hover:bg-white hover:text-gray-900'
+              )}
             >
               <Phone className="w-4 h-4" />
               Call Now
-            </Button>
-            {/* <Button 
-              size="sm"
-              className="bg-orange-500 hover:bg-orange-600 text-white"
-            >
-              Get a Quote
-            </Button> */}
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
           <button 
-            className="lg:hidden p-2"
+            type="button"
+            className="lg:hidden p-2 flex-shrink-0"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (
@@ -106,13 +123,16 @@ export default function Header() {
                 </button>
               ))}
               <div className="px-6 py-4 flex flex-col gap-2 border-t mt-2">
-                <Button variant="outline" className="w-full gap-2 border-gray-900">
+                <a
+                  href={PHONE_TEL_HREF}
+                  className={cn(
+                    buttonVariants({ variant: 'outline' }),
+                    'w-full gap-2 border-gray-900 bg-orange-500 text-white hover:bg-orange-600 hover:text-white'
+                  )}
+                >
                   <Phone className="w-4 h-4" />
                   Call Now
-                </Button>
-                {/* <Button className="w-full bg-orange-500 hover:bg-orange-600">
-                  Get a Quote
-                </Button> */}
+                </a>
               </div>
             </nav>
           </div>
