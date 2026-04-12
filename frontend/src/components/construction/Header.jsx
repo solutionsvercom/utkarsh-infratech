@@ -3,6 +3,7 @@ import { Menu, X, Phone } from 'lucide-react';
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
 import { PHONE_TEL_HREF } from '@/lib/contact';
+import { BrandLogoMark } from '@/components/LogoText';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,10 +17,10 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Home', 'About Us', 'Services', 'Projects', 'Testimonials', 'Contact'];
+  const navItems = ['Home', 'About Us', 'Services', 'Portfolio', 'Packages', 'Testimonials', 'Contact'];
 
   const scrollToSection = (item) => {
-    const sectionId = item.toLowerCase().replace(' ', '-');
+    const sectionId = item.toLowerCase().replace(/\s+/g, '-');
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -32,97 +33,104 @@ export default function Header() {
       isScrolled ? 'bg-white shadow-lg py-2' : 'bg-transparent py-4'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2">
-          {/* Logo */}
+        <div className="flex items-center justify-between gap-3 lg:gap-4">
+          {/* Brand */}
           <div className="flex items-center gap-3 min-w-0 shrink-0">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">U</span>
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-lg overflow-hidden ring-2 ring-orange-500/80 shrink-0 bg-white">
+              <BrandLogoMark />
             </div>
-            <div>
-              <h1 className={`font-bold text-lg tracking-tight ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
+            <div className="min-w-0">
+              <h1 className={`font-bold text-base sm:text-lg tracking-tight truncate ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
                 UTKARSH INFRATECH
               </h1>
-              <p className={`text-xs tracking-widest uppercase ${isScrolled ? 'text-orange-500' : 'text-orange-400'}`}>
-                Builder & Contractor
+              <p className={`text-[10px] sm:text-xs tracking-widest uppercase ${isScrolled ? 'text-orange-500' : 'text-orange-400'}`}>
+                Builder &amp; Contractor
               </p>
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
+          {/* Desktop Navigation — centered between brand and CTA */}
+          <nav
+            className="hidden lg:flex flex-1 justify-center items-center gap-x-3 xl:gap-x-6 min-w-0 px-2"
+            aria-label="Primary"
+          >
             {navItems.map((item) => (
               <button
                 key={item}
+                type="button"
                 onClick={() => scrollToSection(item)}
-                className={`text-sm font-medium transition-colors hover:text-orange-500 ${
+                className={cn(
+                  'text-sm font-medium whitespace-nowrap transition-colors hover:text-orange-500 shrink-0',
                   isScrolled ? 'text-gray-700' : 'text-white/90'
-                }`}
+                )}
               >
                 {item}
               </button>
             ))}
           </nav>
 
-          {/* Mobile: always-visible call (not hidden behind hover / hamburger only) */}
-          <a
-            href={PHONE_TEL_HREF}
-            className={cn(
-              buttonVariants({ variant: 'outline', size: 'sm' }),
-              'lg:hidden flex-shrink-0 gap-1.5 px-2.5 sm:px-3',
-              isScrolled
-                ? 'border-orange-500 bg-orange-500 text-white hover:bg-orange-600 hover:text-white'
-                : 'border-white bg-white/15 text-white backdrop-blur-sm hover:bg-white hover:text-gray-900'
-            )}
-          >
-            <Phone className="w-4 h-4" />
-            <span className="hidden sm:inline text-xs font-semibold">Call</span>
-          </a>
-
-          {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* Actions */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <a
               href={PHONE_TEL_HREF}
               className={cn(
                 buttonVariants({ variant: 'outline', size: 'sm' }),
-                'gap-2',
+                'lg:hidden flex-shrink-0 gap-1.5 px-2.5 sm:px-3',
                 isScrolled
-                  ? 'border-gray-900 bg-white text-gray-900 hover:bg-gray-900 hover:text-white'
+                  ? 'border-orange-500 bg-orange-500 text-white hover:bg-orange-600 hover:text-white'
                   : 'border-white bg-white/15 text-white backdrop-blur-sm hover:bg-white hover:text-gray-900'
               )}
             >
               <Phone className="w-4 h-4" />
-              Call Now
+              <span className="hidden sm:inline text-xs font-semibold">Call</span>
             </a>
-          </div>
 
-          {/* Mobile Menu Button */}
-          <button 
-            type="button"
-            className="lg:hidden p-2 flex-shrink-0"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
-            ) : (
-              <Menu className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
-            )}
-          </button>
+            <div className="hidden lg:flex items-center">
+              <a
+                href={PHONE_TEL_HREF}
+                className={cn(
+                  buttonVariants({ variant: 'outline', size: 'sm' }),
+                  'gap-2',
+                  isScrolled
+                    ? 'border-gray-900 bg-white text-gray-900 hover:bg-gray-900 hover:text-white'
+                    : 'border-white bg-white/15 text-white backdrop-blur-sm hover:bg-white hover:text-gray-900'
+                )}
+              >
+                <Phone className="w-4 h-4" />
+                Call Now
+              </a>
+            </div>
+
+            <button
+              type="button"
+              className="lg:hidden p-2 flex-shrink-0 -mr-1"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
+              ) : (
+                <Menu className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-xl border-t">
-            <nav className="flex flex-col py-4">
+            <nav className="flex flex-col py-2" aria-label="Mobile">
               {navItems.map((item) => (
                 <button
                   key={item}
+                  type="button"
                   onClick={() => scrollToSection(item)}
-                  className="px-6 py-3 text-left text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                  className="px-6 py-3 text-left text-sm text-gray-800 hover:bg-orange-50 hover:text-orange-600 transition-colors"
                 >
                   {item}
                 </button>
               ))}
-              <div className="px-6 py-4 flex flex-col gap-2 border-t mt-2">
+              <div className="px-6 py-4 flex flex-col gap-2 border-t mt-1">
                 <a
                   href={PHONE_TEL_HREF}
                   className={cn(

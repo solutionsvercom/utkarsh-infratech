@@ -51,7 +51,7 @@ export default function Projects() {
     : projects.filter(p => p.category === activeFilter);
 
   return (
-    <section id="projects" className="py-24 bg-white">
+    <section id="portfolio" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div

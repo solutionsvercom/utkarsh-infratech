@@ -4,6 +4,7 @@ import Hero from './components/construction/Hero'
 import About from './components/construction/About'
 import Services from './components/construction/Services'
 import Projects from './components/construction/Projects'
+import Packages from './components/construction/Packages'
 import WhyChooseUs from './components/construction/WhyChooseUs'
 import Testimonials from './components/construction/Testimonials'
 import Contact from './components/construction/Contact'
@@ -17,6 +18,7 @@ export default function App() {
       <About />
       <Services />
       <Projects />
+      <Packages />
       <WhyChooseUs />
       <Testimonials />
       <Contact />

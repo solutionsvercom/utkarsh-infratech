@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import imgResidential from '@/assets/images/Residential_construction.jpeg';
 import imgCommercial from '@/assets/images/Commercial_construction.jpeg';
 import imgInfrastructure from '@/assets/images/infrastructure_construction.jpeg';
-import imgRenovation from '@/assets/images/Reinovation_construction.jpeg';
+import imgRenovation from '@/assets/images/Renovation_construction.jpeg';
 
 export default function Services() {
   const services = [

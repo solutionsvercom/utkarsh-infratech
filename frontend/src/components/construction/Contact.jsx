@@ -148,7 +148,7 @@ export default function Contact() {
           >
             <div className="bg-gray-50 rounded-2xl p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Send Us a Message</h3>
-              <p className="text-gray-600 mb-6">Fill out the form below and we'll get back to you within 24 hours.</p>
+              <p className="text-gray-600 mb-6">Fill out the form below, and we will get back to you within 24 hours.</p>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-5">
@@ -206,7 +206,7 @@ export default function Contact() {
                     'Sending...'
                   ) : (
                     <>
-                      Send Enquiry
+                      Send Inquiry
                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}

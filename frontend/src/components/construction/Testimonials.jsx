@@ -64,7 +64,7 @@ export default function Testimonials() {
             What Our <span className="text-orange-500">Clients</span> Say
           </h2>
           <p className="text-gray-600 text-lg">
-            Don't just take our word for it — hear from the people who've experienced our work firsthand.
+            Don't just take our word for it—hear from people who have experienced our work firsthand.
           </p>
         </motion.div>
 
