@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from '@/lib/utils';
 import { PHONE_TEL_HREF } from '@/lib/contact';
@@ -8,6 +9,8 @@ import { BrandLogoMark } from '@/components/LogoText';
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,14 +20,25 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = ['Home', 'About Us', 'Services', 'Portfolio', 'Packages', 'Testimonials', 'Contact'];
+  const sectionNavItems = ['Home', 'About Us', 'Services', 'Portfolio', 'Packages', 'Testimonials', 'Contact'];
+  const isHome = location.pathname === '/';
 
   const scrollToSection = (item) => {
     const sectionId = item.toLowerCase().replace(/\s+/g, '-');
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    const scrollToTarget = () => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    if (!isHome) {
+      navigate('/');
+      setTimeout(scrollToTarget, 80);
+    } else {
+      scrollToTarget();
     }
+
     setMobileMenuOpen(false);
   };
 
@@ -54,7 +68,7 @@ export default function Header() {
             className="hidden lg:flex flex-1 justify-center items-center gap-x-3 xl:gap-x-6 min-w-0 px-2"
             aria-label="Primary"
           >
-            {navItems.map((item) => (
+            {sectionNavItems.map((item) => (
               <button
                 key={item}
                 type="button"
@@ -67,6 +81,21 @@ export default function Header() {
                 {item}
               </button>
             ))}
+            <NavLink
+              to="/company-profile"
+              className={({ isActive }) =>
+                cn(
+                  'text-sm font-medium whitespace-nowrap transition-colors shrink-0',
+                  isActive
+                    ? 'text-orange-500'
+                    : isScrolled
+                      ? 'text-gray-700 hover:text-orange-500'
+                      : 'text-white/90 hover:text-orange-500'
+                )
+              }
+            >
+              Company Profile
+            </NavLink>
           </nav>
 
           {/* Actions */}
@@ -120,7 +149,7 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-xl border-t">
             <nav className="flex flex-col py-2" aria-label="Mobile">
-              {navItems.map((item) => (
+              {sectionNavItems.map((item) => (
                 <button
                   key={item}
                   type="button"
@@ -130,6 +159,18 @@ export default function Header() {
                   {item}
                 </button>
               ))}
+              <NavLink
+                to="/company-profile"
+                onClick={() => setMobileMenuOpen(false)}
+                className={({ isActive }) =>
+                  cn(
+                    'px-6 py-3 text-left text-sm transition-colors',
+                    isActive ? 'text-orange-600 bg-orange-50' : 'text-gray-800 hover:bg-orange-50 hover:text-orange-600'
+                  )
+                }
+              >
+                Company Profile
+              </NavLink>
               <div className="px-6 py-4 flex flex-col gap-2 border-t mt-1">
                 <a
                   href={PHONE_TEL_HREF}
