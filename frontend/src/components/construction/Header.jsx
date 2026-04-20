@@ -82,7 +82,7 @@ export default function Header() {
               </button>
             ))}
             <NavLink
-              to="/company-profile"
+              to="/portfolio"
               className={({ isActive }) =>
                 cn(
                   'text-sm font-medium whitespace-nowrap transition-colors shrink-0',
@@ -94,7 +94,7 @@ export default function Header() {
                 )
               }
             >
-              Company Profile
+              Portfolio
             </NavLink>
           </nav>
 
@@ -160,7 +160,7 @@ export default function Header() {
                 </button>
               ))}
               <NavLink
-                to="/company-profile"
+                to="/portfolio"
                 onClick={() => setMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   cn(
@@ -169,7 +169,7 @@ export default function Header() {
                   )
                 }
               >
-                Company Profile
+                Portfolio
               </NavLink>
               <div className="px-6 py-4 flex flex-col gap-2 border-t mt-1">
                 <a

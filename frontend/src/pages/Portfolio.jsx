@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Building2,
@@ -14,6 +14,8 @@ import {
   Target,
   Star,
 } from 'lucide-react';
+import pncInfratechLogo from '@/assets/images/pnc_infratech_ltd_logo.png';
+import superhouseLogo from '@/assets/images/superhouse_logo.png';
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -64,6 +66,32 @@ function DetailRow({ label, value }) {
   );
 }
 
+function ClienteleTile({ name, logoSrc, description }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const hasLogo = Boolean(logoSrc);
+  const showImage = hasLogo && !imgFailed;
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-5 sm:p-6 hover:border-orange-300 transition-colors duration-300 flex flex-col items-center text-center h-full">
+      <div className="flex items-center justify-center min-h-[88px] w-full mb-4">
+        {showImage ? (
+          <img
+            src={logoSrc}
+            alt={name}
+            className="max-h-20 w-auto max-w-[240px] object-contain"
+            onError={() => setImgFailed(true)}
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+            <Building2 className="w-8 h-8 text-orange-600" />
+          </div>
+        )}
+      </div>
+      <h3 className="text-gray-900 text-sm font-semibold leading-snug mb-2">{name}</h3>
+      <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{description}</p>
+    </div>
+  );
+}
+
 function ContactCard({ icon: Icon, title, value }) {
   return (
     <div className="rounded-xl border border-gray-200 bg-gray-50 p-5 flex flex-col gap-3 hover:border-orange-300 transition-colors duration-300">
@@ -78,7 +106,7 @@ function ContactCard({ icon: Icon, title, value }) {
   );
 }
 
-export default function CompanyProfile() {
+export default function Portfolio() {
   const overview =
     'Utkarsh Infratech Builder and Contractor is a trusted name in the field of construction. We specialize in high-quality building, road, and infrastructure projects across Uttar Pradesh and other regions. Our aim is to deliver excellence through strong work ethics, timely completion, and sustainable construction practices.';
 
@@ -131,9 +159,21 @@ export default function CompanyProfile() {
   const majorProjectsNiranjan = ['Renovation of ADA Club House, Agra.'];
 
   const clientele = [
-    'PNC Infratech Pvt. Ltd.',
-    'Superhouse Group, Kanpur (DPS Bareilly & Lucknow)',
-    'Niranjan Kumar Garg & Sons, Agra',
+    {
+      name: 'PNC Infratech Pvt. Ltd.',
+      logoSrc: pncInfratechLogo,
+      description: 'Leading infrastructure partner for highway, drainage, and water-supply civil works in Uttar Pradesh.',
+    },
+    {
+      name: 'Superhouse Group, Kanpur (DPS Bareilly & Lucknow)',
+      logoSrc: superhouseLogo,
+      description: 'Promoter of DPS Bareilly and Lucknow—trusted for institutional building, sports facilities, and finishing.',
+    },
+    {
+      name: 'Niranjan Kumar Garg & Sons, Agra',
+      logoSrc: null,
+      description: 'Agra-based associates for landmark civil works and premium interior renovation.',
+    },
   ];
 
   const strengths = [
@@ -179,9 +219,9 @@ export default function CompanyProfile() {
             </div>
 
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-4 leading-[1.05] text-white">
-              Company
+              Our
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Profile</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Portfolio</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-gray-300 mb-3 font-medium tracking-wide">
@@ -291,14 +331,14 @@ export default function CompanyProfile() {
           </SectionCard>
 
           <SectionCard icon={Briefcase} title="Our Clientele">
-            <div className="grid sm:grid-cols-3 gap-4 mt-1">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-1">
               {clientele.map((c) => (
-                <div key={c} className="rounded-xl border border-gray-200 bg-gray-50 p-5 hover:border-orange-300 transition-colors duration-300 text-center">
-                  <div className="w-10 h-10 rounded-full bg-orange-100 mx-auto mb-3 flex items-center justify-center">
-                    <Building2 className="w-5 h-5 text-orange-600" />
-                  </div>
-                  <p className="text-gray-800 text-sm font-medium leading-relaxed">{c}</p>
-                </div>
+                <ClienteleTile
+                  key={c.name}
+                  name={c.name}
+                  logoSrc={c.logoSrc}
+                  description={c.description}
+                />
               ))}
             </div>
           </SectionCard>

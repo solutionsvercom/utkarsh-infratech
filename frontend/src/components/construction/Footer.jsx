@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowUp } from 'lucide-react';
 import {
   PHONE_TEL_HREF,
@@ -19,9 +20,10 @@ export default function Footer() {
     { label: 'Home', href: '#home' },
     { label: 'About Us', href: '#about-us' },
     { label: 'Services', href: '#services' },
-    { label: 'Portfolio', href: '#portfolio' },
+    { label: 'Projects', href: '#projects' },
+    { label: 'Portfolio', to: '/portfolio' },
     { label: 'Packages', href: '#packages' },
-    { label: 'Contact', href: '#contact' }
+    { label: 'Contact', href: '#contact' },
   ];
 
   const services = [
@@ -76,13 +78,23 @@ export default function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-2 group text-sm sm:text-base"
-                  >
-                    <span className="w-0 group-hover:w-2 h-0.5 bg-orange-500 transition-all duration-300 shrink-0" />
-                    {link.label}
-                  </a>
+                  {link.to ? (
+                    <Link
+                      to={link.to}
+                      className="text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-2 group text-sm sm:text-base"
+                    >
+                      <span className="w-0 group-hover:w-2 h-0.5 bg-orange-500 transition-all duration-300 shrink-0" />
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-gray-400 hover:text-orange-500 transition-colors flex items-center gap-2 group text-sm sm:text-base"
+                    >
+                      <span className="w-0 group-hover:w-2 h-0.5 bg-orange-500 transition-all duration-300 shrink-0" />
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
