@@ -4,8 +4,10 @@ import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowUp } 
 import {
   PHONE_TEL_HREF,
   PHONE_TEL_HREF_2,
+  PHONE_TEL_HREF_3,
   PHONE_DISPLAY,
   PHONE_DISPLAY_2,
+  PHONE_DISPLAY_3,
   BUSINESS_EMAIL,
   MAILTO_HREF,
 } from '@/lib/contact';
@@ -129,9 +131,9 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-400 leading-relaxed">
-                Khasra No. 1229, Meera Vihar, Panchamkheda Road, RBL Road
+                  2571SAE1/4, Kalp City Bijnour Road
                   <br />
-                  Lucknow, Uttar Pradesh - 226010
+                  Lucknow, Uttar Pradesh - 226002
                 </span>
               </li>
               <li className="flex items-start gap-3">
@@ -142,6 +144,9 @@ export default function Footer() {
                   </a>
                   <a href={PHONE_TEL_HREF_2} className="text-gray-400 hover:text-orange-500 transition-colors">
                     {PHONE_DISPLAY_2}
+                  </a>
+                  <a href={PHONE_TEL_HREF_3} className="text-gray-400 hover:text-orange-500 transition-colors">
+                    {PHONE_DISPLAY_3}
                   </a>
                 </div>
               </li>

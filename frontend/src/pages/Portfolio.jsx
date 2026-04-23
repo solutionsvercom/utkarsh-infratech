@@ -16,9 +16,9 @@ import {
 } from 'lucide-react';
 import pncInfratechLogo from '@/assets/images/pnc_infratech_ltd_logo.png';
 import superhouseLogo from '@/assets/images/superhouse_logo.png';
-import { PHONE_DISPLAY, PHONE_DISPLAY_2 } from '@/lib/contact';
+import { PHONE_DISPLAY, PHONE_DISPLAY_2, PHONE_DISPLAY_3 } from '@/lib/contact';
 
-const PHONE_LINE = `${PHONE_DISPLAY} / ${PHONE_DISPLAY_2}`;
+const PHONE_LINE = `${PHONE_DISPLAY} / ${PHONE_DISPLAY_2} / ${PHONE_DISPLAY_3}`;
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },

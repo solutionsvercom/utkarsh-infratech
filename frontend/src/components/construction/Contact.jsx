@@ -10,6 +10,7 @@ import {
   PHONE_TEL_HREF,
   PHONE_DISPLAY,
   PHONE_DISPLAY_2,
+  PHONE_DISPLAY_3,
   BUSINESS_EMAIL,
   MAILTO_HREF,
 } from '@/lib/contact';
@@ -59,7 +60,7 @@ export default function Contact() {
     {
       icon: Phone,
       title: 'Call Us',
-      details: [PHONE_DISPLAY, PHONE_DISPLAY_2],
+      details: [PHONE_DISPLAY, PHONE_DISPLAY_2, PHONE_DISPLAY_3],
     },
     {
       icon: Mail,
