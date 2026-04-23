@@ -16,6 +16,9 @@ import {
 } from 'lucide-react';
 import pncInfratechLogo from '@/assets/images/pnc_infratech_ltd_logo.png';
 import superhouseLogo from '@/assets/images/superhouse_logo.png';
+import { PHONE_DISPLAY, PHONE_DISPLAY_2 } from '@/lib/contact';
+
+const PHONE_LINE = `${PHONE_DISPLAY} / ${PHONE_DISPLAY_2}`;
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -287,7 +290,7 @@ export default function Portfolio() {
               <DetailRow label="GST No." value="09BXSPM6841FZW" />
               <DetailRow label="PAN No." value="BXSPM6841F" />
               <DetailRow label="Address" value="Khasra No. 1229, Meera Vihar, Panchamkheda Road, RBL Road, Lucknow — 226002" />
-              <DetailRow label="Contact" value="+91 8770916755 / +91 7509123767" />
+              <DetailRow label="Contact" value={PHONE_LINE} />
               <DetailRow label="Email" value="utkarshinfra170222@gmail.com" />
             </div>
           </SectionCard>
@@ -351,7 +354,7 @@ export default function Portfolio() {
           <SectionCard icon={MapPin} title="Contact Information">
             <div className="grid sm:grid-cols-3 gap-4">
               <ContactCard icon={MapPin} title="Office Address" value="Khasra No. 1229, Meera Vihar, Panchamkheda Road, RBL Road, Lucknow 226002" />
-              <ContactCard icon={Phone} title="Mobile" value="+91 8770916755 / +91 7509123767" />
+              <ContactCard icon={Phone} title="Mobile" value={PHONE_LINE} />
               <ContactCard icon={Mail} title="Email" value="utkarshinfra170222@gmail.com" />
             </div>
           </SectionCard>

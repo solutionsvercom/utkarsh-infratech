@@ -54,7 +54,7 @@ export default function Contact() {
     {
       icon: MapPin,
       title: 'Our Office',
-      details: ['Khasra No. 1229, Meera Vihar, Panchamkheda Road, RBL Road', 'Lucknow, Uttar Pradesh - 226010']
+      details: ['2571SAE1/4, Kalp City Bijnour Road', 'Lucknow, Uttar Pradesh - 226002']
     },
     {
       icon: Phone,

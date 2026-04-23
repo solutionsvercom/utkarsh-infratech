@@ -159,6 +159,9 @@ export default function Footer() {
           <p className="text-gray-500 text-sm text-center md:text-left">
             © 2026 UTKARSH INFRATECH. All rights reserved.
           </p>
+          <p className="text-gray-500 text-sm text-center md:text-left">
+            Designed by:- <a href="https://vercomsolutions.in" target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:text-orange-600 transition-colors">Vercom Solutions Pvt. Ltd.</a>
+          </p>
           <button
             type="button"
             onClick={scrollToTop}

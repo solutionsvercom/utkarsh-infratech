@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { PHONE_TEL_HREF } from '@/lib/contact';
 
+const HERO_GSTIN_LABEL = 'GST:GSTIN09BXSPM6841F1ZW';
+
 export default function Hero() {
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden pt-20 sm:pt-24">
@@ -29,17 +31,31 @@ export default function Hero() {
           transition={{ duration: 0.8 }}
           className="flex flex-col items-center text-center"
         >
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.25 }}
-            className="inline-flex items-center gap-2 bg-orange-500/20 backdrop-blur-sm border border-orange-500/30 rounded-full px-4 py-2 mb-6"
-          >
-            <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shrink-0" />
-            <span className="text-orange-300 text-sm font-medium tracking-wide">
-              Lucknow&apos;s Trusted Builder
-            </span>
-          </motion.div>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6 w-full max-w-lg sm:max-w-none px-2">
+            <motion.button
+              type="button"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.12 }}
+              className={cn(
+                buttonVariants({ variant: 'outline' }),
+                'border-orange-500/60 bg-black/35 text-orange-200 shadow-none backdrop-blur-sm hover:bg-orange-500/20 hover:text-white rounded-full px-4 py-2 h-auto min-h-10 text-xs sm:text-sm font-semibold tracking-wide whitespace-normal sm:whitespace-nowrap text-center'
+              )}
+            >
+              {HERO_GSTIN_LABEL}
+            </motion.button>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.25 }}
+              className="inline-flex items-center gap-2 bg-orange-500/20 backdrop-blur-sm border border-orange-500/30 rounded-full px-4 py-2"
+            >
+              <span className="w-2 h-2 bg-orange-500 rounded-full animate-pulse shrink-0" />
+              <span className="text-orange-300 text-sm font-medium tracking-wide">
+                Lucknow&apos;s Trusted Builder
+              </span>
+            </motion.div>
+          </div>
 
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
