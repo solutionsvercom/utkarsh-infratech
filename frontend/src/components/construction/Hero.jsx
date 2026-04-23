@@ -113,6 +113,15 @@ export default function Hero() {
               <Phone className="mr-2 h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
               Call Now
             </a>
+            <a
+              href="#contact"
+              className={cn(
+                buttonVariants(),
+                'bg-orange-500 text-white hover:bg-orange-600 rounded-lg px-6 py-2.5 h-11 text-sm font-semibold sm:text-base sm:h-12 sm:px-8 inline-flex items-center justify-center'
+              )}
+            >
+              Get In Touch
+            </a>
           </div>
 
           <motion.div
