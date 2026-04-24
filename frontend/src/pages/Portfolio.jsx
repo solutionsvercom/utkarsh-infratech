@@ -16,7 +16,16 @@ import {
 } from 'lucide-react';
 import pncInfratechLogo from '@/assets/images/pnc_infratech_ltd_logo.png';
 import superhouseLogo from '@/assets/images/superhouse_logo.png';
-import { PHONE_DISPLAY, PHONE_DISPLAY_2, PHONE_DISPLAY_3 } from '@/lib/contact';
+import {
+  PHONE_DISPLAY,
+  PHONE_DISPLAY_2,
+  PHONE_DISPLAY_3,
+  BUSINESS_EMAIL,
+  BUSINESS_ADDRESS,
+} from '@/lib/contact';
+import OngoingProjectsSection from '@/components/portfolio/OngoingProjectsSection';
+import EquipmentResourcesSection from '@/components/portfolio/EquipmentResourcesSection';
+import { getOngoingProjectsJsonLd } from '@/data/portfolioExtended';
 
 const PHONE_LINE = `${PHONE_DISPLAY} / ${PHONE_DISPLAY_2} / ${PHONE_DISPLAY_3}`;
 
@@ -195,8 +204,14 @@ export default function Portfolio() {
     { label: 'MSME Status', value: 'Certified' },
   ];
 
+  const ongoingProjectsJsonLd = getOngoingProjectsJsonLd();
+
   return (
     <main className="bg-gray-50 text-gray-900 min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(ongoingProjectsJsonLd) }}
+      />
       <section className="relative min-h-[80vh] flex items-center overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -289,9 +304,9 @@ export default function Portfolio() {
               <DetailRow label="Type" value="Contractor / Builder / Civil Construction" />
               <DetailRow label="GST No." value="09BXSPM6841FZW" />
               <DetailRow label="PAN No." value="BXSPM6841F" />
-              <DetailRow label="Address" value="Khasra No. 1229, Meera Vihar, Panchamkheda Road, RBL Road, Lucknow — 226002" />
+              <DetailRow label="Address" value={BUSINESS_ADDRESS} />
               <DetailRow label="Contact" value={PHONE_LINE} />
-              <DetailRow label="Email" value="utkarshinfra170222@gmail.com" />
+              <DetailRow label="Email" value={BUSINESS_EMAIL} />
             </div>
           </SectionCard>
 
@@ -334,6 +349,9 @@ export default function Portfolio() {
             </div>
           </SectionCard>
 
+          <OngoingProjectsSection />
+          <EquipmentResourcesSection />
+
           <SectionCard icon={Briefcase} title="Our Clientele">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-1">
               {clientele.map((c) => (
@@ -353,9 +371,9 @@ export default function Portfolio() {
 
           <SectionCard icon={MapPin} title="Contact Information">
             <div className="grid sm:grid-cols-3 gap-4">
-              <ContactCard icon={MapPin} title="Office Address" value="Khasra No. 1229, Meera Vihar, Panchamkheda Road, RBL Road, Lucknow 226002" />
+              <ContactCard icon={MapPin} title="Office Address" value={BUSINESS_ADDRESS} />
               <ContactCard icon={Phone} title="Mobile" value={PHONE_LINE} />
-              <ContactCard icon={Mail} title="Email" value="utkarshinfra170222@gmail.com" />
+              <ContactCard icon={Mail} title="Email" value={BUSINESS_EMAIL} />
             </div>
           </SectionCard>
         </div>
