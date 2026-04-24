@@ -10,6 +10,7 @@ import {
   PHONE_DISPLAY_3,
   BUSINESS_EMAIL,
   MAILTO_HREF,
+  BUSINESS_ADDRESS,
 } from '@/lib/contact';
 import { BrandLogoMark } from '@/components/LogoText';
 
@@ -131,9 +132,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-400 leading-relaxed">
-                  2571SAE1/4, Kalp City Bijnour Road
-                  <br />
-                  Lucknow, Uttar Pradesh - 226002
+                  {BUSINESS_ADDRESS}
                 </span>
               </li>
               <li className="flex items-start gap-3">

@@ -13,6 +13,7 @@ import {
   PHONE_DISPLAY_3,
   BUSINESS_EMAIL,
   MAILTO_HREF,
+  BUSINESS_ADDRESS,
 } from '@/lib/contact';
 
 export default function Contact() {
@@ -55,7 +56,7 @@ export default function Contact() {
     {
       icon: MapPin,
       title: 'Our Office',
-      details: ['2571SAE1/4, Kalp City Bijnour Road', 'Lucknow, Uttar Pradesh - 226002']
+      details: [BUSINESS_ADDRESS]
     },
     {
       icon: Phone,
