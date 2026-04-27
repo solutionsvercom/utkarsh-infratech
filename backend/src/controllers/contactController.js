@@ -40,7 +40,6 @@ function wasAccepted(info, targetEmail) {
   return accepted.some((addr) => String(addr).toLowerCase() === normalizedTarget);
 }
 
-/** Logo for inline CID image (fallback: frontend asset path in dev) */
 function resolveLogoPath() {
   const candidates = [
     path.join(__dirname, '..', '..', 'assets', 'logo.png'),
@@ -102,7 +101,6 @@ exports.submitContact = async (req, res) => {
     const trimmedEmail = String(email).trim();
     const safeMessage = escapeHtml(message);
     const greetingName = escapeHtml(name.trim().split(/\s+/)[0] || 'there');
-
     const logoPath = resolveLogoPath();
     const hasLogo = Boolean(logoPath);
     const logoBlock = hasLogo
@@ -144,7 +142,7 @@ exports.submitContact = async (req, res) => {
         to: [trimmedEmail],
       },
       replyTo: companyInbox,
-      subject: 'Thank you for contacting Utkarsh Infratech',
+      subject: 'Utkarsh Infratech: Enquiry Received',
       html: renderSubmitterThankYou({
         greetingName,
         messageBody: safeMessage,
@@ -160,6 +158,9 @@ ${message}
 
 Regards,
 Utkarsh Infratech`,
+      headers: {
+        'X-Entity-Ref-ID': `utkarsh-${Date.now()}`,
+      },
       attachments,
     };
 
