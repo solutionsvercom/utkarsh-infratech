@@ -15,8 +15,9 @@ function escapeHtml(s) {
 
 function createMailTransport() {
   const host = process.env.EMAIL_HOST;
-  const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASS;
+  const user = String(process.env.EMAIL_USER || '').trim();
+  // Gmail app passwords are 16 chars; users often paste with spaces.
+  const pass = String(process.env.EMAIL_PASS || '').replace(/\s+/g, '');
   if (!host || !user || !pass) {
     return null;
   }
@@ -27,6 +28,16 @@ function createMailTransport() {
     secure: port === 465,
     auth: { user, pass },
   });
+}
+
+function wasAccepted(info, targetEmail) {
+  const accepted = Array.isArray(info?.accepted) ? info.accepted : [];
+  const rejected = Array.isArray(info?.rejected) ? info.rejected : [];
+  const normalizedTarget = String(targetEmail || '').toLowerCase();
+
+  if (rejected.length > 0) return false;
+  if (!normalizedTarget) return accepted.length > 0;
+  return accepted.some((addr) => String(addr).toLowerCase() === normalizedTarget);
 }
 
 /** Logo for inline CID image (fallback: frontend asset path in dev) */
@@ -85,7 +96,8 @@ exports.submitContact = async (req, res) => {
       });
     }
 
-    const fromAddr = process.env.EMAIL_FROM || process.env.EMAIL_USER;
+    const authUser = String(process.env.EMAIL_USER || '').trim();
+    const fromAddr = process.env.EMAIL_FROM || authUser;
     const companyInbox = process.env.COMPANY_EMAIL || process.env.EMAIL_USER;
     const trimmedEmail = String(email).trim();
     const safeMessage = escapeHtml(message);
@@ -109,15 +121,28 @@ exports.submitContact = async (req, res) => {
     const companyMail = {
       from: fromAddr,
       to: companyInbox,
+      replyTo: trimmedEmail,
       subject: `New enquiry from ${name} — Utkarsh Infratech`,
       html: buildCompanyEnquiryHtml(name, phone, trimmedEmail, message),
     };
 
-    await transporter.sendMail(companyMail);
+    const companyResult = await transporter.sendMail(companyMail);
+    console.log('Company mail result:', {
+      accepted: companyResult.accepted,
+      rejected: companyResult.rejected,
+      response: companyResult.response,
+    });
+    if (!wasAccepted(companyResult, companyInbox)) {
+      throw new Error(`Company mailbox delivery rejected: ${JSON.stringify(companyResult?.rejected || [])}`);
+    }
 
     const thankYouMail = {
       from: fromAddr,
       to: trimmedEmail,
+      envelope: {
+        from: authUser,
+        to: [trimmedEmail],
+      },
       replyTo: companyInbox,
       subject: 'Thank you for contacting Utkarsh Infratech',
       html: renderSubmitterThankYou({
@@ -125,13 +150,67 @@ exports.submitContact = async (req, res) => {
         messageBody: safeMessage,
         logoBlock,
       }),
+      text: `Hello ${greetingName},
+
+Thank you for reaching out to Utkarsh Infratech.
+We have received your enquiry and our team will contact you shortly.
+
+Your message:
+${message}
+
+Regards,
+Utkarsh Infratech`,
       attachments,
     };
 
+    let thankYouDelivered = false;
     try {
-      await transporter.sendMail(thankYouMail);
+      const thankYouResult = await transporter.sendMail(thankYouMail);
+      console.log('Submitter mail result (primary):', {
+        accepted: thankYouResult.accepted,
+        rejected: thankYouResult.rejected,
+        response: thankYouResult.response,
+      });
+      thankYouDelivered = wasAccepted(thankYouResult, trimmedEmail);
+      if (!thankYouDelivered) {
+        throw new Error(`Submitter delivery rejected: ${JSON.stringify(thankYouResult?.rejected || [])}`);
+      }
     } catch (replyErr) {
-      console.error('Thank-you email failed (enquiry was still received):', replyErr);
+      console.error('Thank-you email failed, retrying without inline logo/template:', replyErr);
+      try {
+        const fallbackResult = await transporter.sendMail({
+          from: fromAddr,
+          to: trimmedEmail,
+          envelope: {
+            from: authUser,
+            to: [trimmedEmail],
+          },
+          replyTo: companyInbox,
+          subject: 'Thank you for contacting Utkarsh Infratech',
+          text: `Hello ${greetingName},
+
+Thank you for reaching out to Utkarsh Infratech.
+We have received your enquiry and our team will contact you shortly.
+
+Regards,
+Utkarsh Infratech`,
+        });
+        console.log('Submitter mail result (fallback):', {
+          accepted: fallbackResult.accepted,
+          rejected: fallbackResult.rejected,
+          response: fallbackResult.response,
+        });
+        thankYouDelivered = wasAccepted(fallbackResult, trimmedEmail);
+      } catch (fallbackErr) {
+        console.error('Fallback thank-you email also failed:', fallbackErr);
+      }
+    }
+
+    if (!thankYouDelivered) {
+      return res.status(202).json({
+        success: true,
+        message: 'Enquiry received, but confirmation email to sender could not be delivered.',
+      });
     }
 
     res.status(200).json({

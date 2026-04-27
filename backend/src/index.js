@@ -15,6 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/contact', contactRoutes);
+app.use('/contact', contactRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

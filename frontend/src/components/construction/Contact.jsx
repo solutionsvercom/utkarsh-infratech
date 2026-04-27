@@ -25,19 +25,67 @@ export default function Contact() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const buildContactEndpoints = () => {
+    const configuredApiBase = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+    const baseCandidates = [];
+
+    if (configuredApiBase) {
+      baseCandidates.push(configuredApiBase);
+    }
+
+    // Same-origin API path for reverse-proxy deployments.
+    baseCandidates.push('');
+
+    // Local backend fallback for dev if API base is not configured.
+    if (import.meta.env.DEV && !configuredApiBase) {
+      baseCandidates.push('http://localhost:5001');
+    }
+
+    const endpointCandidates = [];
+    for (const base of baseCandidates) {
+      endpointCandidates.push(`${base}/api/contact`);
+      endpointCandidates.push(`${base}/contact`);
+    }
+
+    return [...new Set(endpointCandidates)];
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
-      const apiBase = import.meta.env.VITE_API_URL ?? '';
-      const response = await fetch(`${apiBase}/api/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      const data = await response.json().catch(() => ({}));
+      const endpoints = buildContactEndpoints();
+      let response = null;
+      let data = {};
+
+      for (const endpoint of endpoints) {
+        try {
+          const currentResponse = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData),
+          });
+
+          const currentData = await currentResponse.json().catch(() => ({}));
+          response = currentResponse;
+          data = currentData;
+
+          // Continue trying only on 404 route mismatches.
+          if (currentResponse.status === 404) {
+            continue;
+          }
+
+          break;
+        } catch {
+          // Try next fallback endpoint on network/CORS failures.
+        }
+      }
+
+      if (!response) {
+        throw new Error('No contact endpoint could be reached.');
+      }
+
       if (response.ok) {
         toast.success(data.message || 'Thank you! We will contact you soon.');
         setFormData({ name: '', phone: '', email: '', message: '' });
