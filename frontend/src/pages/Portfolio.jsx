@@ -114,7 +114,7 @@ function ContactCard({ icon: Icon, title, value }) {
         </div>
         <h3 className="font-semibold text-gray-900 text-sm">{title}</h3>
       </div>
-      <p className="text-gray-700 text-sm leading-relaxed break-all">{value}</p>
+      <p className="text-gray-700 text-sm leading-relaxed break-all whitespace-pre-line">{value}</p>
     </div>
   );
 }

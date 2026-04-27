@@ -13,4 +13,4 @@ export const BUSINESS_EMAIL = 'utkarshinfra170222@gmail.com';
 export const MAILTO_HREF = `mailto:${BUSINESS_EMAIL}`;
 
 /** Primary business address (site-wide) */
-export const BUSINESS_ADDRESS = '2571SAE1/4, Kalp City Bijnour Road, Lucknow, Uttar Pradesh';
+export const BUSINESS_ADDRESS = '2571SAE1/4, Kalp City Bijnour Road, Lucknow, Uttar Pradesh - 226002';

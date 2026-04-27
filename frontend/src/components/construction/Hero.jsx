@@ -65,7 +65,7 @@ export default function Hero() {
           >
             <div className="flex items-center justify-center gap-4 mb-4">
               <div className="h-px w-12 sm:w-16 bg-orange-500 shrink-0" />
-              <span className="text-orange-400 text-xs font-semibold uppercase tracking-widest">Est. 2009</span>
+              <span className="text-orange-400 text-xs font-semibold uppercase tracking-widest">EST 2022</span>
               <div className="h-px w-12 sm:w-16 bg-orange-500 shrink-0" />
             </div>
 
@@ -131,8 +131,8 @@ export default function Hero() {
             className="flex flex-wrap justify-center gap-8 sm:gap-12 mt-10 sm:mt-12 pt-8 border-t border-white/20 w-full max-w-2xl px-2"
           >
             {[
-              { number: '15+', label: 'Years of Experience' },
-              { number: '200+', label: 'Projects Completed' },
+              { number: '9+', label: 'Years of Experience' },
+              { number: '40+', label: 'Projects Completed' },
               { number: '99%', label: 'Client Satisfaction' },
             ].map((stat) => (
               <div key={stat.label} className="text-center min-w-[100px]">
