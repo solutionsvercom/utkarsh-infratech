@@ -27,14 +27,17 @@ export default function Contact() {
 
   const buildContactEndpoints = () => {
     const configuredApiBase = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+    const useSameOriginApi = String(import.meta.env.VITE_USE_SAME_ORIGIN_API || '').toLowerCase() === 'true';
     const baseCandidates = [];
 
     if (configuredApiBase) {
       baseCandidates.push(configuredApiBase);
     }
 
-    // Same-origin API path for reverse-proxy deployments.
-    baseCandidates.push('');
+    // Same-origin API path for reverse-proxy deployments (opt-in on prod).
+    if (useSameOriginApi || import.meta.env.DEV) {
+      baseCandidates.push('');
+    }
 
     // Local backend fallback for dev if API base is not configured.
     if (import.meta.env.DEV && !configuredApiBase) {
@@ -83,7 +86,11 @@ export default function Contact() {
       }
 
       if (!response) {
-        throw new Error('No contact endpoint could be reached.');
+        throw new Error(
+          import.meta.env.PROD
+            ? 'No contact endpoint is configured for production. Set VITE_API_URL to your backend base URL.'
+            : 'No contact endpoint could be reached.'
+        );
       }
 
       if (response.ok) {
