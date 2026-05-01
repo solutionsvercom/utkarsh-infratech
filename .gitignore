@@ -42,6 +42,9 @@ Desktop.ini
 # Vite
 frontend/.vite/
 
+# Vercel CLI metadata (not used for Hostinger)
+.vercel/
+
 # Testing & coverage
 coverage/
 .nyc_output/
