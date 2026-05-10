@@ -39,7 +39,7 @@ export default function About() {
               transition={{ delay: 0.3, type: 'spring' }}
               className="absolute -bottom-4 left-4 sm:left-8 bg-white rounded-xl shadow-xl p-5 sm:p-6 z-20"
             >
-              <p className="text-3xl sm:text-4xl font-bold text-orange-500">15+</p>
+              <p className="text-3xl sm:text-4xl font-bold text-orange-500">9+</p>
               <p className="text-gray-600 text-sm">Years of<br />Excellence</p>
             </motion.div>
           </motion.div>
@@ -62,7 +62,7 @@ export default function About() {
 
             <p className="text-gray-600 text-lg mb-6 leading-relaxed">
               UTKARSH INFRATECH has been at the forefront of construction excellence in Lucknow
-              for over 15 years. We specialize in delivering high-quality residential, commercial,
+              for over 9 years. We specialize in delivering high-quality residential, commercial,
               and infrastructure projects that stand the test of time.
             </p>
 

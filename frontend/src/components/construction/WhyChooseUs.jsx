@@ -100,10 +100,10 @@ export default function WhyChooseUs() {
           className="mt-14 sm:mt-16 bg-orange-500 rounded-2xl p-6 sm:p-8 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8"
         >
           {[
-            { value: '500+', label: 'Happy Clients' },
-            { value: '200+', label: 'Projects Completed' },
+            { value: '100+', label: 'Happy Clients' },
+            { value: '40+', label: 'Projects Completed' },
             { value: '50+', label: 'Team Members' },
-            { value: '15+', label: 'Years of Experience' }
+            { value: '9+', label: 'Years of Experience' }
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1">{stat.value}</p>

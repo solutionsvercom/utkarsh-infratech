@@ -9,7 +9,7 @@ export const PHONE_DISPLAY_2 = '+91 7509123767';
 export const PHONE_DISPLAY_3 = '+91 8770916755';
 
 /** Public business email (shown on website & mailto links) */
-export const BUSINESS_EMAIL = 'utkarshinfra170222@gmail.com';
+export const BUSINESS_EMAIL = 'contact@utkarshinfratech.com';
 export const MAILTO_HREF = `mailto:${BUSINESS_EMAIL}`;
 
 /** Primary business address (site-wide) */
