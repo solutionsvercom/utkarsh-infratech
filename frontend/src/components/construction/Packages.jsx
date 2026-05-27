@@ -293,7 +293,7 @@ function PackageCard({ pkg, openKey, onToggleCategory }) {
     <div className="flex-shrink-0 w-[min(100%,320px)] sm:w-[300px] snap-center">
       <div className="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden flex flex-col h-full">
         <div className="bg-orange-500 text-white text-center font-semibold text-sm  px-3 py-3 leading-snug">
-          {pkg.name} – ₹ {pkg.price}/sq. ft. (incl. GST)
+          {pkg.name}
         </div>
         <div className="divide-y divide-gray-100 flex-1">
           {pkg.categories.map((cat) => {
