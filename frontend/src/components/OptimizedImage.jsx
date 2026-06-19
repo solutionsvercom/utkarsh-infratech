@@ -54,7 +54,7 @@ export default function OptimizedImage({
           alt={alt}
           loading={loading}
           decoding="async"
-          fetchPriority={fetchPriority}
+          {...(fetchPriority && fetchPriority !== 'auto' ? { fetchpriority: fetchPriority } : {})}
           onLoad={handleLoad}
           onError={handleError}
           onClick={onClick}

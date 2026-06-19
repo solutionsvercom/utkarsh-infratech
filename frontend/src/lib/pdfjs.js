@@ -1,25 +1,17 @@
 import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+import PdfJsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?worker';
 
-let workerInitPromise = null;
+let workerInstance = null;
 
 /**
- * Hostinger (and some static hosts) serve .mjs as text/plain, which breaks
- * module workers. Load the worker script and run it from a blob URL instead.
+ * PDF.js needs a real ES-module Web Worker. Blob URLs and wrong MIME types on
+ * .mjs files cause "Setting up fake worker" and broken rendering on mobile.
  */
-async function initPdfWorker() {
-  if (!workerInitPromise) {
-    workerInitPromise = (async () => {
-      const response = await fetch(pdfWorkerUrl);
-      if (!response.ok) {
-        throw new Error(`Failed to load PDF worker (${response.status})`);
-      }
-      const script = await response.text();
-      const blob = new Blob([script], { type: 'application/javascript' });
-      pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(blob);
-    })();
+function ensurePdfWorker() {
+  if (!workerInstance) {
+    workerInstance = new PdfJsWorker();
+    pdfjsLib.GlobalWorkerOptions.workerPort = workerInstance;
   }
-  return workerInitPromise;
 }
 
 const documentCache = new Map();
@@ -34,7 +26,7 @@ async function fetchPdfBytes(url) {
 
 /** @returns {Promise<import('pdfjs-dist').PDFDocumentProxy>} */
 export async function loadPdfDocument(url) {
-  await initPdfWorker();
+  ensurePdfWorker();
 
   if (!documentCache.has(url)) {
     const promise = fetchPdfBytes(url)
@@ -70,7 +62,11 @@ export async function renderPdfPageToCanvas(pdf, pageNumber, canvas, maxWidth) {
   canvas.style.width = '100%';
   canvas.style.height = 'auto';
 
-  await page.render({ canvasContext: context, viewport }).promise;
+  await page.render({
+    canvasContext: context,
+    canvas,
+    viewport,
+  }).promise;
 }
 
 export function clearPdfDocumentCache() {
