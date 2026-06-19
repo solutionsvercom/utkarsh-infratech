@@ -120,10 +120,10 @@ export default function DocumentPreviewModal({ src, alt, isOpen, onClose }) {
       </div>
 
       <div
-        className={`relative w-full h-full flex p-4 sm:p-8 ${
+        className={`relative w-full h-full flex ${
           isPdf && isMobile
-            ? 'items-stretch justify-center overflow-hidden'
-            : `items-center justify-center overflow-hidden ${isPdf ? '' : 'touch-none'}`
+            ? 'items-stretch justify-center overflow-hidden p-2 pt-14'
+            : `items-center justify-center overflow-hidden p-4 sm:p-8 ${isPdf ? '' : 'touch-none'}`
         }`}
         onClick={(e) => e.stopPropagation()}
         onWheel={onWheel}

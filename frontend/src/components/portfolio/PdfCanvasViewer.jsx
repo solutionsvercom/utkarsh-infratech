@@ -31,7 +31,7 @@ export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) 
         if (cancelled || !canvasRef.current) return;
 
         await renderPdfPageToCanvas(pdf, 1, canvasRef.current, width, renderTaskRef, {
-          maxPixelRatio: 2,
+          maxPixelRatio: 3,
         });
         if (!cancelled) setLoaded(true);
       } catch (err) {
@@ -87,7 +87,7 @@ export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) 
       <div className="absolute inset-0 flex items-center justify-center">
         <canvas
           ref={canvasRef}
-          className={`max-w-full max-h-full object-contain bg-white transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`max-w-full max-h-full bg-white transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           onContextMenu={(e) => e.preventDefault()}
         />
       </div>

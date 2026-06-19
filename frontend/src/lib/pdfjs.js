@@ -53,9 +53,8 @@ function pdfDocumentOptions(data) {
     isEvalSupported: false,
     disableAutoFetch: true,
     disableStream: true,
-    // Scanned cert PDFs rarely need embedded fonts; skipping avoids TT parse warnings.
-    disableFontFace: true,
-    useSystemFonts: true,
+    disableFontFace: false,
+    useSystemFonts: false,
     verbosity: 0,
   };
 }
@@ -83,10 +82,11 @@ export function isRenderingCancelled(error) {
 
 /**
  * Renders a PDF page onto a canvas scaled to maxWidth (CSS pixels).
- * Uses devicePixelRatio so text stays sharp on mobile Retina screens.
+ * Bakes devicePixelRatio into the viewport scale so mobile screens stay sharp.
  *
  * @param {object} [options]
- * @param {number} [options.maxPixelRatio=2.5] Cap DPR for performance (use 3 in fullscreen modal).
+ * @param {number} [options.maxPixelRatio=3] Cap DPR for performance.
+ * @param {number} [options.qualityScale=1] Extra CSS scale (e.g. 1.25 for fullscreen reading).
  */
 export async function renderPdfPageToCanvas(
   pdf,
@@ -101,30 +101,27 @@ export async function renderPdfPageToCanvas(
     activeTaskRef.current = null;
   }
 
-  const maxPixelRatio = options.maxPixelRatio ?? 2.5;
-  const outputScale = Math.min(window.devicePixelRatio || 1, maxPixelRatio);
+  const maxPixelRatio = options.maxPixelRatio ?? 3;
+  const qualityScale = options.qualityScale ?? 1;
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, maxPixelRatio);
 
   const page = await pdf.getPage(pageNumber);
   const baseViewport = page.getViewport({ scale: 1 });
-  const cssScale = Math.max(maxWidth / baseViewport.width, 0.1);
-  const viewport = page.getViewport({ scale: cssScale });
-  const context = canvas.getContext('2d');
+  const cssScale = Math.max((maxWidth / baseViewport.width) * qualityScale, 0.1);
+  const viewport = page.getViewport({ scale: cssScale * pixelRatio });
+  const context = canvas.getContext('2d', { alpha: false });
 
-  const cssWidth = Math.floor(viewport.width);
-  const cssHeight = Math.floor(viewport.height);
+  const cssWidth = Math.floor(viewport.width / pixelRatio);
+  const cssHeight = Math.floor(viewport.height / pixelRatio);
 
-  canvas.width = Math.floor(cssWidth * outputScale);
-  canvas.height = Math.floor(cssHeight * outputScale);
+  canvas.width = Math.floor(viewport.width);
+  canvas.height = Math.floor(viewport.height);
   canvas.style.width = `${cssWidth}px`;
-  canvas.style.height = 'auto';
-
-  const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
+  canvas.style.height = `${cssHeight}px`;
 
   const task = page.render({
     canvasContext: context,
-    canvas,
     viewport,
-    transform,
     intent: 'display',
   });
 
