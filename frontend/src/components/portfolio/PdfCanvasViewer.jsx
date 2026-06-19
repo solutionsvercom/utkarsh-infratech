@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AlertCircle, Expand, FileText, Loader2 } from 'lucide-react';
-import { loadPdfDocument, renderPdfPageToCanvas } from '@/lib/pdfjs';
-
-async function waitForContainerWidth(element, fallback = 320) {
-  for (let attempt = 0; attempt < 24; attempt += 1) {
-    if (element.clientWidth > 0) return element.clientWidth;
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-  }
-  return fallback;
-}
+import {
+  isRenderingCancelled,
+  loadPdfDocument,
+  renderPdfPageToCanvas,
+  waitForContainerWidth,
+} from '@/lib/pdfjs';
 
 /**
  * Renders the first PDF page on a canvas — works on mobile where iframe embeds show an "Open" button.
@@ -16,7 +13,7 @@ async function waitForContainerWidth(element, fallback = 320) {
 export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const lastWidthRef = useRef(0);
+  const renderTaskRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -24,7 +21,6 @@ export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) 
     let cancelled = false;
     setLoaded(false);
     setError(false);
-    lastWidthRef.current = 0;
 
     async function renderPage() {
       try {
@@ -32,33 +28,25 @@ export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) 
         if (cancelled || !canvasRef.current || !containerRef.current) return;
 
         const width = await waitForContainerWidth(containerRef.current);
-        lastWidthRef.current = width;
-        await renderPdfPageToCanvas(pdf, 1, canvasRef.current, width);
+        if (cancelled || !canvasRef.current) return;
+
+        await renderPdfPageToCanvas(pdf, 1, canvasRef.current, width, renderTaskRef);
         if (!cancelled) setLoaded(true);
-      } catch {
+      } catch (err) {
+        if (isRenderingCancelled(err)) return;
+        if (import.meta.env.DEV) {
+          console.error('[PdfCanvasViewer] failed:', src, err);
+        }
         if (!cancelled) setError(true);
       }
     }
 
     renderPage();
 
-    const container = containerRef.current;
-    if (!container) return () => { cancelled = true; };
-
-    const observer = new ResizeObserver(() => {
-      const w = container.clientWidth;
-      if (!w || Math.abs(w - lastWidthRef.current) < 12) return;
-      lastWidthRef.current = w;
-      setLoaded(false);
-      renderPage().catch(() => {
-        if (!cancelled) setError(true);
-      });
-    });
-    observer.observe(container);
-
     return () => {
       cancelled = true;
-      observer.disconnect();
+      renderTaskRef.current?.cancel();
+      renderTaskRef.current = null;
     };
   }, [src]);
 
@@ -94,21 +82,22 @@ export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) 
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={onExpand}
-        className={`absolute inset-0 z-[1] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-inset ${loaded && !error ? '' : 'pointer-events-none'}`}
-        aria-label={`View ${alt} in fullscreen`}
-      >
+      <div className="absolute inset-0 flex items-center justify-center">
         <canvas
           ref={canvasRef}
           className={`max-w-full max-h-full object-contain bg-white transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           onContextMenu={(e) => e.preventDefault()}
         />
-      </button>
+      </div>
 
       {loaded && !error && onExpand && (
         <>
+          <button
+            type="button"
+            onClick={onExpand}
+            className="absolute inset-0 z-[1] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-inset"
+            aria-label={`View ${alt} in fullscreen`}
+          />
           <button
             type="button"
             onClick={onExpand}

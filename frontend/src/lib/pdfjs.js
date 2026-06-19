@@ -6,10 +6,6 @@ let workerInstance = null;
 /** Base URL for PDF.js wasm / font / cmap assets (see scripts/copy-pdfjs-assets.mjs). */
 const PDFJS_ASSET_BASE = `${import.meta.env.BASE_URL}pdfjs`;
 
-/**
- * PDF.js needs a real ES-module Web Worker. Blob URLs and wrong MIME types on
- * .mjs files cause "Setting up fake worker" and broken rendering on mobile.
- */
 function ensurePdfWorker() {
   if (!workerInstance) {
     workerInstance = new PdfJsWorker();
@@ -24,12 +20,17 @@ async function fetchPdfBytes(url) {
   if (!bytesCache.has(url)) {
     bytesCache.set(
       url,
-      fetch(url).then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`PDF fetch failed (${response.status})`);
-        }
-        return response.arrayBuffer();
-      }),
+      fetch(url)
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`PDF fetch failed (${response.status})`);
+          }
+          return response.arrayBuffer();
+        })
+        .catch((error) => {
+          bytesCache.delete(url);
+          throw error;
+        }),
     );
   }
   return bytesCache.get(url);
@@ -49,7 +50,6 @@ function pdfDocumentOptions(data) {
     cMapUrl: `${PDFJS_ASSET_BASE}/cmaps/`,
     cMapPacked: true,
     iccUrl: `${PDFJS_ASSET_BASE}/iccs/`,
-    useWorkerFetch: false,
     isEvalSupported: false,
     disableAutoFetch: true,
     disableStream: true,
@@ -73,14 +73,23 @@ export async function loadPdfDocument(url) {
   return documentCache.get(url);
 }
 
+export function isRenderingCancelled(error) {
+  return error?.name === 'RenderingCancelledException';
+}
+
 /**
  * Renders a PDF page onto a canvas scaled to maxWidth (CSS pixels).
- * Uses 1x scale for speed on inline mobile previews (not retina-sharp).
+ * Pass activeTaskRef to cancel an in-flight render on the same canvas.
  */
-export async function renderPdfPageToCanvas(pdf, pageNumber, canvas, maxWidth) {
+export async function renderPdfPageToCanvas(pdf, pageNumber, canvas, maxWidth, activeTaskRef) {
+  if (activeTaskRef?.current) {
+    activeTaskRef.current.cancel();
+    activeTaskRef.current = null;
+  }
+
   const page = await pdf.getPage(pageNumber);
   const baseViewport = page.getViewport({ scale: 1 });
-  const scale = maxWidth / baseViewport.width;
+  const scale = Math.max(maxWidth / baseViewport.width, 0.1);
   const viewport = page.getViewport({ scale });
   const context = canvas.getContext('2d');
 
@@ -89,15 +98,51 @@ export async function renderPdfPageToCanvas(pdf, pageNumber, canvas, maxWidth) {
   canvas.style.width = '100%';
   canvas.style.height = 'auto';
 
-  await page.render({
+  const task = page.render({
     canvasContext: context,
     canvas,
     viewport,
     intent: 'display',
-  }).promise;
+  });
+
+  if (activeTaskRef) activeTaskRef.current = task;
+
+  try {
+    await task.promise;
+  } finally {
+    if (activeTaskRef?.current === task) {
+      activeTaskRef.current = null;
+    }
+  }
 }
 
 export function clearPdfDocumentCache() {
   documentCache.clear();
   bytesCache.clear();
+}
+
+/** Wait until the container has a real width (carousel enter animations). */
+export function waitForContainerWidth(element, fallback = 320, timeoutMs = 2000) {
+  return new Promise((resolve) => {
+    if (element.clientWidth > 0) {
+      resolve(element.clientWidth);
+      return;
+    }
+
+    let settled = false;
+    const finish = (width) => {
+      if (settled) return;
+      settled = true;
+      observer.disconnect();
+      clearTimeout(timer);
+      resolve(width > 0 ? width : fallback);
+    };
+
+    const observer = new ResizeObserver(() => {
+      if (element.clientWidth > 0) finish(element.clientWidth);
+    });
+    observer.observe(element);
+
+    const timer = setTimeout(() => finish(element.clientWidth), timeoutMs);
+  });
 }

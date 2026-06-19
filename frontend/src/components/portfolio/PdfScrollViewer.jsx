@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { loadPdfDocument, renderPdfPageToCanvas } from '@/lib/pdfjs';
+import { isRenderingCancelled, loadPdfDocument, renderPdfPageToCanvas } from '@/lib/pdfjs';
 
 function LazyPdfPage({ pdf, pageNumber, width }) {
   const wrapperRef = useRef(null);
   const canvasRef = useRef(null);
+  const renderTaskRef = useRef(null);
   const [visible, setVisible] = useState(false);
   const [rendered, setRendered] = useState(false);
 
@@ -26,14 +27,20 @@ function LazyPdfPage({ pdf, pageNumber, width }) {
     if (!visible || !canvasRef.current || rendered) return undefined;
 
     let cancelled = false;
-    renderPdfPageToCanvas(pdf, pageNumber, canvasRef.current, width)
+    renderPdfPageToCanvas(pdf, pageNumber, canvasRef.current, width, renderTaskRef)
       .then(() => {
         if (!cancelled) setRendered(true);
       })
-      .catch(() => {});
+      .catch((err) => {
+        if (!isRenderingCancelled(err) && import.meta.env.DEV) {
+          console.error('[PdfScrollViewer] page render failed:', pageNumber, err);
+        }
+      });
 
     return () => {
       cancelled = true;
+      renderTaskRef.current?.cancel();
+      renderTaskRef.current = null;
     };
   }, [visible, pdf, pageNumber, width, rendered]);
 
