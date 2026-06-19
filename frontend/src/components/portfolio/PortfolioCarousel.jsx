@@ -112,7 +112,7 @@ export default function PortfolioCarousel({
             transition={{ duration: 0.45, ease: 'easeInOut' }}
             className="w-full"
           >
-            {renderSlide(items[index], index)}
+            {renderSlide(items[index], index, index)}
           </motion.div>
         </AnimatePresence>
       </div>

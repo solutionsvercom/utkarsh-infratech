@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { X, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import { isPdfFile, pdfEmbedUrl } from '@/data/portfolioCertifications';
+import { useIsMobileViewport } from '@/hooks/useIsMobileViewport';
+import PdfScrollViewer from './PdfScrollViewer';
 
 export default function DocumentPreviewModal({ src, alt, isOpen, onClose }) {
   const isPdf = isPdfFile(src);
+  const isMobile = useIsMobileViewport();
   const [scale, setScale] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const dragging = useRef(false);
@@ -117,7 +120,11 @@ export default function DocumentPreviewModal({ src, alt, isOpen, onClose }) {
       </div>
 
       <div
-        className={`relative w-full h-full flex items-center justify-center p-4 sm:p-8 overflow-hidden ${isPdf ? '' : 'touch-none'}`}
+        className={`relative w-full h-full flex p-4 sm:p-8 ${
+          isPdf && isMobile
+            ? 'items-stretch justify-center overflow-hidden'
+            : `items-center justify-center overflow-hidden ${isPdf ? '' : 'touch-none'}`
+        }`}
         onClick={(e) => e.stopPropagation()}
         onWheel={onWheel}
         onPointerDown={onPointerDown}
@@ -126,11 +133,15 @@ export default function DocumentPreviewModal({ src, alt, isOpen, onClose }) {
         onPointerCancel={onPointerUp}
       >
         {isPdf ? (
-          <iframe
-            title={alt}
-            src={pdfEmbedUrl(src)}
-            className="w-full h-full max-w-5xl max-h-[90vh] rounded-lg bg-white"
-          />
+          isMobile ? (
+            <PdfScrollViewer src={src} alt={alt} />
+          ) : (
+            <iframe
+              title={alt}
+              src={pdfEmbedUrl(src)}
+              className="w-full h-full max-w-5xl max-h-[90vh] rounded-lg bg-white"
+            />
+          )
         ) : (
           <img
             src={src}

@@ -154,3 +154,16 @@ export const majorProjects = [
 export function projectImageUrl(filename) {
   return `/portfolio/projects/${encodeURIComponent(filename)}`;
 }
+
+export function projectImageWebpUrl(filename) {
+  const stem = filename.replace(/\.[^.]+$/, '');
+  return `/portfolio/projects/${encodeURIComponent(stem)}.webp`;
+}
+
+/** Original + WebP URLs for preloading and OptimizedImage. */
+export function projectImageSources(filename) {
+  return {
+    src: projectImageUrl(filename),
+    webpSrc: projectImageWebpUrl(filename),
+  };
+}

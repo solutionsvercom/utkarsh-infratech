@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Activity, CheckCircle2, Landmark, Wrench } from 'lucide-react';
-import { majorProjects, projectImageUrl } from '@/data/portfolioProjects';
+import { majorProjects, projectImageSources } from '@/data/portfolioProjects';
+import OptimizedImage from '@/components/OptimizedImage';
+import { useImagePreload } from '@/hooks/useImagePreload';
 import PortfolioCarousel from './PortfolioCarousel';
 import DocumentPreviewModal from './DocumentPreviewModal';
 
@@ -31,25 +33,28 @@ function statusIcon(status) {
   return CheckCircle2;
 }
 
-function ProjectSlide({ project, onImageClick }) {
-  const imageUrl = projectImageUrl(project.image);
+function ProjectSlide({ project, onImageClick, isActive }) {
+  const { src, webpSrc } = projectImageSources(project.image);
   const StatusIcon = statusIcon(project.status);
 
   return (
     <div className="grid md:grid-cols-2 gap-6 p-4 sm:p-6">
       <button
         type="button"
-        onClick={() => onImageClick(imageUrl, project.name)}
-        className="group relative rounded-xl overflow-hidden border border-gray-200 bg-white aspect-[4/3] w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+        onClick={() => onImageClick(src, project.name)}
+        className="group relative rounded-xl overflow-hidden border border-gray-200 bg-gray-100 aspect-[4/3] w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
         aria-label={`View ${project.name} in fullscreen`}
       >
-        <img
-          src={imageUrl}
+        <OptimizedImage
+          src={src}
+          webpSrc={webpSrc}
           alt={project.name}
-          loading="lazy"
+          loading={isActive ? 'eager' : 'lazy'}
+          fetchPriority={isActive ? 'high' : 'auto'}
+          wrapperClassName="absolute inset-0"
           className="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
         />
-        <span className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors" />
+        <span className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors pointer-events-none" />
       </button>
 
       <div className="flex flex-col justify-center">
@@ -111,6 +116,15 @@ function ProjectSlide({ project, onImageClick }) {
 export default function MajorProjectsSection() {
   const [preview, setPreview] = useState({ open: false, src: '', alt: '' });
 
+  const preloadUrls = useMemo(
+    () => majorProjects.flatMap((p) => {
+      const { src, webpSrc } = projectImageSources(p.image);
+      return [webpSrc, src];
+    }),
+    [],
+  );
+  useImagePreload(preloadUrls);
+
   const openPreview = (src, alt) => setPreview({ open: true, src, alt });
   const closePreview = () => setPreview({ open: false, src: '', alt: '' });
 
@@ -130,8 +144,12 @@ export default function MajorProjectsSection() {
             items={majorProjects}
             ariaLabel="Major projects showcase"
             autoPlayMs={5000}
-            renderSlide={(project) => (
-              <ProjectSlide project={project} onImageClick={openPreview} />
+            renderSlide={(project, slideIndex, activeIndex) => (
+              <ProjectSlide
+                project={project}
+                onImageClick={openPreview}
+                isActive={slideIndex === activeIndex}
+              />
             )}
           />
         </div>
