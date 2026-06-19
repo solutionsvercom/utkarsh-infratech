@@ -30,7 +30,9 @@ export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) 
         const width = await waitForContainerWidth(containerRef.current);
         if (cancelled || !canvasRef.current) return;
 
-        await renderPdfPageToCanvas(pdf, 1, canvasRef.current, width, renderTaskRef);
+        await renderPdfPageToCanvas(pdf, 1, canvasRef.current, width, renderTaskRef, {
+          maxPixelRatio: 2,
+        });
         if (!cancelled) setLoaded(true);
       } catch (err) {
         if (isRenderingCancelled(err)) return;

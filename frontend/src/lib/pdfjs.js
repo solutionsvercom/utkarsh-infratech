@@ -83,29 +83,48 @@ export function isRenderingCancelled(error) {
 
 /**
  * Renders a PDF page onto a canvas scaled to maxWidth (CSS pixels).
- * Pass activeTaskRef to cancel an in-flight render on the same canvas.
+ * Uses devicePixelRatio so text stays sharp on mobile Retina screens.
+ *
+ * @param {object} [options]
+ * @param {number} [options.maxPixelRatio=2.5] Cap DPR for performance (use 3 in fullscreen modal).
  */
-export async function renderPdfPageToCanvas(pdf, pageNumber, canvas, maxWidth, activeTaskRef) {
+export async function renderPdfPageToCanvas(
+  pdf,
+  pageNumber,
+  canvas,
+  maxWidth,
+  activeTaskRef,
+  options = {},
+) {
   if (activeTaskRef?.current) {
     activeTaskRef.current.cancel();
     activeTaskRef.current = null;
   }
 
+  const maxPixelRatio = options.maxPixelRatio ?? 2.5;
+  const outputScale = Math.min(window.devicePixelRatio || 1, maxPixelRatio);
+
   const page = await pdf.getPage(pageNumber);
   const baseViewport = page.getViewport({ scale: 1 });
-  const scale = Math.max(maxWidth / baseViewport.width, 0.1);
-  const viewport = page.getViewport({ scale });
+  const cssScale = Math.max(maxWidth / baseViewport.width, 0.1);
+  const viewport = page.getViewport({ scale: cssScale });
   const context = canvas.getContext('2d');
 
-  canvas.width = Math.floor(viewport.width);
-  canvas.height = Math.floor(viewport.height);
-  canvas.style.width = '100%';
+  const cssWidth = Math.floor(viewport.width);
+  const cssHeight = Math.floor(viewport.height);
+
+  canvas.width = Math.floor(cssWidth * outputScale);
+  canvas.height = Math.floor(cssHeight * outputScale);
+  canvas.style.width = `${cssWidth}px`;
   canvas.style.height = 'auto';
+
+  const transform = outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null;
 
   const task = page.render({
     canvasContext: context,
     canvas,
     viewport,
+    transform,
     intent: 'display',
   });
 
