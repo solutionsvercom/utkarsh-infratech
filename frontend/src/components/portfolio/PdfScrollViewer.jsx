@@ -24,10 +24,16 @@ function LazyPdfPage({ pdf, pageNumber, width }) {
   }, []);
 
   useEffect(() => {
+    setRendered(false);
+  }, [width, pageNumber]);
+
+  useEffect(() => {
     if (!visible || !canvasRef.current || rendered) return undefined;
 
     let cancelled = false;
-    renderPdfPageToCanvas(pdf, pageNumber, canvasRef.current, width, renderTaskRef)
+    renderPdfPageToCanvas(pdf, pageNumber, canvasRef.current, width, renderTaskRef, {
+      maxPixelRatio: 3,
+    })
       .then(() => {
         if (!cancelled) setRendered(true);
       })
@@ -53,7 +59,7 @@ function LazyPdfPage({ pdf, pageNumber, width }) {
       )}
       <canvas
         ref={canvasRef}
-        className={`max-w-full h-auto rounded-lg shadow-lg bg-white ${rendered ? 'block' : 'hidden'}`}
+        className={`w-full max-w-full h-auto rounded-lg shadow-lg bg-white ${rendered ? 'block' : 'hidden'}`}
         onContextMenu={(e) => e.preventDefault()}
       />
     </div>
