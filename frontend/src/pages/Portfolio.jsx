@@ -7,10 +7,12 @@ import {
   CheckCircle2,
   Eye,
   HardHat,
+  Landmark,
   MapPin,
   Mail,
   Phone,
   Target,
+  Star,
 } from 'lucide-react';
 import pncInfratechLogo from '@/assets/images/pnc_infratech_ltd_logo.png';
 import superhouseLogo from '@/assets/images/superhouse_logo.png';
@@ -23,9 +25,6 @@ import {
 } from '@/lib/contact';
 import OngoingProjectsSection from '@/components/portfolio/OngoingProjectsSection';
 import EquipmentResourcesSection from '@/components/portfolio/EquipmentResourcesSection';
-import CertificationsSection from '@/components/portfolio/CertificationsSection';
-import WorkOrdersSection from '@/components/portfolio/WorkOrdersSection';
-import MajorProjectsSection from '@/components/portfolio/MajorProjectsSection';
 import { getOngoingProjectsJsonLd } from '@/data/portfolioExtended';
 
 const PHONE_LINE = `${PHONE_DISPLAY} / ${PHONE_DISPLAY_2} / ${PHONE_DISPLAY_3}`;
@@ -143,6 +142,34 @@ export default function Portfolio() {
     'Renovation & Interior Works',
     'Waterproofing and Finishing Works',
   ];
+
+  const certifications = [
+    'Registered with Uttar Pradesh Construction and Infrastructure Development Corporation Limited (Lucknow)',
+    'Registered Contractor — Irrigation Department, Lucknow',
+    'Registered with Labour Department (U.P.)',
+    'ESIC Certified Contractor',
+    'EPF Registered',
+    'MSME Registered Unit',
+  ];
+
+  const majorProjectsPnc = [
+    'Construction of 2 Rest Areas (Truck Lay Bye) and 10 Bus Stops on Chakeri-Allahabad 6-Lane Highway.',
+    'Construction of RCC Drain (3 km) — Chakeri-Allahabad 6-Lane Highway.',
+    'Construction of 3 Overhead Tanks (OHT) and Pump House — Complete Civil & Mechanical Work under JJM Project, Barabanki.',
+  ];
+
+  const majorProjectsDps = [
+    "Construction of Girls' Hostel (6,100 Sqft) — DPS Bareilly",
+    'Construction of 10,000 Sqft Basketball / Multipurpose Professional Court — DPS Bareilly',
+    'Construction of 3 Professional Badminton Courts — DPS Bareilly',
+    'Construction of Lift and Renovation of 12 Toilets — DPS Bareilly',
+    'Renovation of 12 Toilets — DPS Lucknow',
+    'Paver Block Laying Work (Approx. 5,000 Sqft) — DPS Bareilly',
+    'Brick Bat Coba Work (Approx. 10,000 Sqft) — DPS Bareilly',
+    'External and Internal Painting — Academic Building, New Classroom & Old Classroom Blocks',
+  ];
+
+  const majorProjectsNiranjan = ['Renovation of ADA Club House, Agra.'];
 
   const clientele = [
     {
@@ -283,11 +310,44 @@ export default function Portfolio() {
             </div>
           </SectionCard>
 
-          <CertificationsSection />
+          <SectionCard icon={BadgeCheck} title="Certifications &amp; Departmental Registrations">
+            <ListBlock items={certifications} />
+          </SectionCard>
 
-          <WorkOrdersSection />
-
-          <MajorProjectsSection />
+          <SectionCard icon={Landmark} title="Major Projects">
+            <div className="space-y-8">
+              <div>
+                <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 rounded-full px-4 py-1.5 mb-4">
+                  <Star className="w-3 h-3 text-orange-600" />
+                  <span className="text-orange-700 text-xs font-semibold tracking-wide uppercase">PNC Infratech Pvt. Ltd.</span>
+                </div>
+                <ListBlock items={majorProjectsPnc} />
+              </div>
+              <div className="h-px bg-gray-100" />
+              <div>
+                <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 rounded-full px-4 py-1.5 mb-4">
+                  <Star className="w-3 h-3 text-orange-600" />
+                  <span className="text-orange-700 text-xs font-semibold tracking-wide uppercase">Superhouse Group — DPS Bareilly &amp; Lucknow</span>
+                </div>
+                <ul className="space-y-3">
+                  {majorProjectsDps.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                      <span className="text-gray-700">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="h-px bg-gray-100" />
+              <div>
+                <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 rounded-full px-4 py-1.5 mb-4">
+                  <Star className="w-3 h-3 text-orange-600" />
+                  <span className="text-orange-700 text-xs font-semibold tracking-wide uppercase">Niranjan Kumar Garg &amp; Sons, Agra</span>
+                </div>
+                <ListBlock items={majorProjectsNiranjan} />
+              </div>
+            </div>
+          </SectionCard>
 
           <OngoingProjectsSection />
           <EquipmentResourcesSection />
