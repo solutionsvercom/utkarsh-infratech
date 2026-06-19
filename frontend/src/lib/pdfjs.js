@@ -1,27 +1,57 @@
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
-let workerReady = false;
+let workerInitPromise = null;
 
-export function ensurePdfWorker() {
-  if (workerReady) return;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).href;
-  workerReady = true;
+/**
+ * Hostinger (and some static hosts) serve .mjs as text/plain, which breaks
+ * module workers. Load the worker script and run it from a blob URL instead.
+ */
+async function initPdfWorker() {
+  if (!workerInitPromise) {
+    workerInitPromise = (async () => {
+      const response = await fetch(pdfWorkerUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to load PDF worker (${response.status})`);
+      }
+      const script = await response.text();
+      const blob = new Blob([script], { type: 'application/javascript' });
+      pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(blob);
+    })();
+  }
+  return workerInitPromise;
 }
 
 const documentCache = new Map();
 
+async function fetchPdfBytes(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`PDF fetch failed (${response.status})`);
+  }
+  return response.arrayBuffer();
+}
+
 /** @returns {Promise<import('pdfjs-dist').PDFDocumentProxy>} */
 export async function loadPdfDocument(url) {
-  ensurePdfWorker();
+  await initPdfWorker();
+
   if (!documentCache.has(url)) {
-    documentCache.set(
-      url,
-      pdfjsLib.getDocument({ url }).promise,
-    );
+    const promise = fetchPdfBytes(url)
+      .then((data) =>
+        pdfjsLib.getDocument({
+          data,
+          useWorkerFetch: false,
+          isEvalSupported: false,
+        }).promise,
+      )
+      .catch((error) => {
+        documentCache.delete(url);
+        throw error;
+      });
+    documentCache.set(url, promise);
   }
+
   return documentCache.get(url);
 }
 

@@ -2,6 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AlertCircle, Expand, FileText, Loader2 } from 'lucide-react';
 import { loadPdfDocument, renderPdfPageToCanvas } from '@/lib/pdfjs';
 
+async function waitForContainerWidth(element, fallback = 320) {
+  for (let attempt = 0; attempt < 24; attempt += 1) {
+    if (element.clientWidth > 0) return element.clientWidth;
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+  }
+  return fallback;
+}
+
 /**
  * Renders the first PDF page on a canvas — works on mobile where iframe embeds show an "Open" button.
  */
@@ -23,7 +31,7 @@ export default function PdfCanvasViewer({ src, alt, onExpand, className = '' }) 
         const pdf = await loadPdfDocument(src);
         if (cancelled || !canvasRef.current || !containerRef.current) return;
 
-        const width = containerRef.current.clientWidth || 320;
+        const width = await waitForContainerWidth(containerRef.current);
         lastWidthRef.current = width;
         await renderPdfPageToCanvas(pdf, 1, canvasRef.current, width);
         if (!cancelled) setLoaded(true);
