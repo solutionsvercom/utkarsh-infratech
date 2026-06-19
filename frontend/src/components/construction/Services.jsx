@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Home, Building, Landmark, Hammer, ArrowRight } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import imgResidential from '@/assets/images/Residential_construction.jpeg';
-import imgCommercial from '@/assets/images/Commercial_construction.jpeg';
-import imgInfrastructure from '@/assets/images/infrastructure_construction.jpeg';
-import imgRenovation from '@/assets/images/Renovation_construction.jpeg';
+import { Button } from '@/components/ui/button';
+import OptimizedImage from '@/components/OptimizedImage';
+import { useImagePreload } from '@/hooks/useImagePreload';
+import { serviceImages } from '@/data/serviceImages';
 
 export default function Services() {
   const services = [
@@ -13,27 +12,33 @@ export default function Services() {
       icon: Home,
       title: 'Residential Construction',
       description: 'Custom homes, apartments, and villas built with precision and care to create your dream living space.',
-      image: imgResidential
+      image: serviceImages.residential,
     },
     {
       icon: Building,
       title: 'Commercial Projects',
       description: 'Office buildings, retail spaces, and commercial complexes designed for functionality and aesthetics.',
-      image: imgCommercial
+      image: serviceImages.commercial,
     },
     {
       icon: Landmark,
       title: 'Infrastructure Development',
       description: 'Roads, bridges, and public infrastructure projects that serve communities for generations.',
-      image: imgInfrastructure
+      image: serviceImages.infrastructure,
     },
     {
       icon: Hammer,
       title: 'Renovation & Contracting',
       description: 'Transform existing spaces with our expert renovation and general contracting services.',
-      image: imgRenovation
-    }
+      image: serviceImages.renovation,
+    },
   ];
+
+  const preloadUrls = useMemo(
+    () => services.flatMap((s) => [s.image.webpSrc, s.image.src]),
+    [],
+  );
+  useImagePreload(preloadUrls);
 
   return (
     <section id="services" className="py-24 bg-gray-50">
@@ -70,16 +75,20 @@ export default function Services() {
               className="group relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
             >
               {/* Image */}
-              <div className="relative h-56 overflow-hidden">
-                <img
-                  src={service.image}
+              <div className="relative h-56 overflow-hidden bg-gray-100">
+                <OptimizedImage
+                  src={service.image.src}
+                  webpSrc={service.image.webpSrc}
                   alt={service.title}
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                  fetchPriority={index === 0 ? 'high' : 'auto'}
+                  wrapperClassName="absolute inset-0"
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+
                 {/* Icon Badge */}
-                <div className="absolute top-4 left-4 w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="absolute top-4 left-4 w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg z-10">
                   <service.icon className="w-7 h-7 text-white" />
                 </div>
               </div>

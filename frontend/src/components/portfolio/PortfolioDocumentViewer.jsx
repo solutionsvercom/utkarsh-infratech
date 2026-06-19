@@ -1,13 +1,27 @@
 import React from 'react';
 import { Expand, FileText } from 'lucide-react';
 import { isPdfFile, pdfEmbedUrl } from '@/data/portfolioCertifications';
+import { useIsMobileViewport } from '@/hooks/useIsMobileViewport';
+import PdfCanvasViewer from './PdfCanvasViewer';
 
 /**
  * Inline document preview for carousel slides (image or PDF).
- * PDFs are scrollable inside the slide; use the expand button for fullscreen.
+ * On mobile, PDFs render via canvas (iframes show a browser "Open" button instead).
  */
 export default function PortfolioDocumentViewer({ src, alt, onExpand, className = '' }) {
+  const isMobile = useIsMobileViewport();
   const isPdf = isPdfFile(src);
+
+  if (isPdf && isMobile) {
+    return (
+      <PdfCanvasViewer
+        src={src}
+        alt={alt}
+        onExpand={onExpand}
+        className={className}
+      />
+    );
+  }
 
   if (isPdf) {
     return (
