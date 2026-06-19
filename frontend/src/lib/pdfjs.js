@@ -53,6 +53,10 @@ function pdfDocumentOptions(data) {
     isEvalSupported: false,
     disableAutoFetch: true,
     disableStream: true,
+    // Scanned cert PDFs rarely need embedded fonts; skipping avoids TT parse warnings.
+    disableFontFace: true,
+    useSystemFonts: true,
+    verbosity: 0,
   };
 }
 
