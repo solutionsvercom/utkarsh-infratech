@@ -124,34 +124,3 @@ export function getOngoingProjectsJsonLd() {
   };
 }
 
-// TODO: Add these files under /public/work-orders/ in frontend:
-// - work-order-pnc-rest-areas.pdf
-// - work-order-rcc-drain.pdf
-// - work-order-jjm-oht-pumphouse.pdf
-export const workOrderDocuments = [
-  {
-    id: 'pnc-rest-areas',
-    title: 'Work Order - Rest Areas & Bus Stops',
-    issuedBy: 'PNC Infratech Pvt. Ltd.',
-    date: '2024-11-10',
-    fileName: 'work-order-pnc-rest-areas.pdf',
-  },
-  {
-    id: 'rcc-drain',
-    title: 'Work Order - RCC Drain Package',
-    issuedBy: 'PNC Infratech Pvt. Ltd.',
-    date: '2025-01-18',
-    fileName: 'work-order-rcc-drain.pdf',
-  },
-  {
-    id: 'jjm-oht',
-    title: 'Work Order - OHT & Pump House',
-    issuedBy: 'Project Authority (JJM)',
-    date: '2025-03-04',
-    fileName: 'work-order-jjm-oht-pumphouse.pdf',
-  },
-];
-
-export function workOrderPdfUrl(fileName) {
-  return `/work-orders/${fileName}`;
-}
