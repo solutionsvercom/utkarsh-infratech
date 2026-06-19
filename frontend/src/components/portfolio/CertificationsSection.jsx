@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { BadgeCheck, Building2, User } from 'lucide-react';
 import {
@@ -6,6 +6,7 @@ import {
   getCertificationFileUrl,
   getCertificationTypeLabel,
 } from '@/data/portfolioCertifications';
+import { preloadPdf } from '@/lib/pdfjs';
 import PortfolioCarousel from './PortfolioCarousel';
 import DocumentPreviewModal from './DocumentPreviewModal';
 import PortfolioDocumentViewer from './PortfolioDocumentViewer';
@@ -64,6 +65,12 @@ function CertificationSlide({ item, onPreview }) {
 
 export default function CertificationsSection() {
   const [preview, setPreview] = useState({ open: false, src: '', alt: '' });
+
+  useEffect(() => {
+    allCertificationsAndRegistrations.forEach((item) => {
+      preloadPdf(getCertificationFileUrl(item));
+    });
+  }, []);
 
   const openPreview = (src, alt) => setPreview({ open: true, src, alt });
   const closePreview = () => setPreview({ open: false, src: '', alt: '' });

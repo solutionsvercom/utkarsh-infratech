@@ -21,6 +21,9 @@ app.get('/api/health', (req, res) => {
 
 app.use(express.static(path.join(__dirname, '../public'), {
   setHeaders(res, filePath) {
+    if (filePath.endsWith('.wasm')) {
+      res.setHeader('Content-Type', 'application/wasm');
+    }
     if (filePath.endsWith('.mjs') || filePath.endsWith('.js')) {
       res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
     }

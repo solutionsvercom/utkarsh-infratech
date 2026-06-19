@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Building2, Calendar, FileText } from 'lucide-react';
 import { getWorkOrderFileUrl, workOrders } from '@/data/portfolioWorkOrders';
+import { preloadPdf } from '@/lib/pdfjs';
 import PortfolioCarousel from './PortfolioCarousel';
 import DocumentPreviewModal from './DocumentPreviewModal';
 import WorkOrderPdfViewer from './WorkOrderPdfViewer';
@@ -56,6 +57,12 @@ function WorkOrderSlide({ item, onPreview }) {
 
 export default function WorkOrdersSection() {
   const [preview, setPreview] = useState({ open: false, src: '', alt: '' });
+
+  useEffect(() => {
+    workOrders.forEach((item) => {
+      preloadPdf(getWorkOrderFileUrl(item));
+    });
+  }, []);
 
   const openPreview = (src, alt) => setPreview({ open: true, src, alt });
   const closePreview = () => setPreview({ open: false, src: '', alt: '' });
