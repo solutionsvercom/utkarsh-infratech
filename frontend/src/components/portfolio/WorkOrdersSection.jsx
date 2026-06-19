@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Calendar, FileText } from 'lucide-react';
-import { getWorkOrderFileUrl, workOrders } from '@/data/portfolioWorkOrders';
-import PortfolioCarousel from './PortfolioCarousel';
-import DocumentPreviewModal from './DocumentPreviewModal';
-import WorkOrderPdfViewer from './WorkOrderPdfViewer';
+import { ExternalLink, FileText } from 'lucide-react';
+import { workOrderDocuments, workOrderPdfUrl } from '@/data/portfolioExtended';
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -13,80 +10,50 @@ const fadeUp = {
   transition: { duration: 0.55 },
 };
 
-function WorkOrderSlide({ item, onPreview }) {
-  const fileUrl = getWorkOrderFileUrl(item);
-  const badgeLabel = item.category || 'Construction Work Order';
-
+export default function WorkOrdersSection() {
   return (
-    <div className="grid md:grid-cols-2 gap-6 p-4 sm:p-6">
-      <WorkOrderPdfViewer
-        src={fileUrl}
-        alt={item.title}
-        onExpand={() => onPreview(fileUrl, item.title)}
-      />
+    <motion.section {...fadeUp} className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div className="h-1 bg-gradient-to-r from-orange-500 to-orange-300" />
+      <div className="p-6 sm:p-8">
+        <div className="flex items-center gap-3 mb-5">
+          <div className="w-11 h-11 rounded-xl bg-orange-100 flex items-center justify-center">
+            <FileText className="w-5 h-5 text-orange-600" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Work Orders</h2>
+        </div>
 
-      <div className="flex flex-col justify-center">
-        <span className="inline-flex items-center gap-1.5 self-start bg-orange-100 border border-orange-200 rounded-full px-3 py-1 mb-3 text-xs font-semibold text-orange-700 uppercase tracking-wide">
-          {badgeLabel}
-        </span>
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">{item.title}</h3>
-        <p className="text-gray-600 leading-relaxed mb-4">{item.description}</p>
-        <div className="space-y-2 text-sm">
-          <p className="flex items-start gap-2 text-gray-700">
-            <Building2 className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
-            <span>
-              <span className="font-semibold text-gray-900">Issued By: </span>
-              {item.issuedBy}
-            </span>
-          </p>
-          {item.date && (
-            <p className="flex items-start gap-2 text-gray-700">
-              <Calendar className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
-              <span>
-                <span className="font-semibold text-gray-900">Date: </span>
-                {item.date}
-              </span>
-            </p>
-          )}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {workOrderDocuments.map((doc) => {
+            const pdfUrl = workOrderPdfUrl(doc.fileName);
+            return (
+              <article key={doc.id} className="rounded-xl border border-gray-200 bg-gray-50 p-4 sm:p-5">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <h3 className="text-base font-semibold text-gray-900">{doc.title}</h3>
+                  <a
+                    href={pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-orange-600 hover:text-orange-700"
+                  >
+                    Open
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
+                <p className="text-xs text-gray-500 mb-3">
+                  Issued by: {doc.issuedBy} · Date: {doc.date}
+                </p>
+                <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+                  <iframe
+                    title={doc.title}
+                    src={`${pdfUrl}#toolbar=0`}
+                    className="w-full h-72"
+                  />
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
-    </div>
-  );
-}
-
-export default function WorkOrdersSection() {
-  const [preview, setPreview] = useState({ open: false, src: '', alt: '' });
-
-  const openPreview = (src, alt) => setPreview({ open: true, src, alt });
-  const closePreview = () => setPreview({ open: false, src: '', alt: '' });
-
-  return (
-    <>
-      <motion.section {...fadeUp} className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
-        <div className="h-1 bg-gradient-to-r from-orange-500 to-orange-300" />
-        <div className="p-6 sm:p-8">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-11 h-11 rounded-xl bg-orange-100 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-orange-600" />
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Construction Work Orders</h2>
-          </div>
-
-          <PortfolioCarousel
-            items={workOrders}
-            ariaLabel="Construction work orders"
-            autoPlayMs={5000}
-            renderSlide={(item) => <WorkOrderSlide item={item} onPreview={openPreview} />}
-          />
-        </div>
-      </motion.section>
-
-      <DocumentPreviewModal
-        src={preview.src}
-        alt={preview.alt}
-        isOpen={preview.open}
-        onClose={closePreview}
-      />
-    </>
+    </motion.section>
   );
 }
