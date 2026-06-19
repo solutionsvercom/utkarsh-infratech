@@ -4,8 +4,9 @@
   "type": "module",
   "scripts": {
     "optimize:images": "node scripts/optimize-images.mjs",
-    "dev": "vite",
-    "build": "npm run optimize:images && vite build",
+    "copy:pdfjs": "node scripts/copy-pdfjs-assets.mjs",
+    "dev": "npm run copy:pdfjs && vite",
+    "build": "npm run optimize:images && npm run copy:pdfjs && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
